@@ -1,0 +1,37 @@
+{
+  "name": "floatline-brand-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Floatline \u2014 brand identity playbook, asset studio, design-system reference and UI kits. Frontend only.",
+  "scripts": {
+    "dev": "next dev",
+    "prebuild": "node scripts/verify-fonts.mjs",
+    "build": "next build",
+    "start": "node scripts/serve-out.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "fonts:fetch": "node scripts/fetch-fonts.mjs",
+    "fonts:verify": "node scripts/verify-fonts.mjs",
+    "fonts:css": "node scripts/build-font-css.mjs",
+    "assets:build": "node --experimental-strip-types --no-warnings scripts/build-brand-assets.mjs",
+    "verify": "node --experimental-strip-types --no-warnings scripts/verify-app.mjs && node scripts/verify-layout.mjs && node scripts/verify-export.mjs && node scripts/verify-fidelity.mjs",
+    "audit": "node scripts/audit-responsive.mjs"
+  },
+  "dependencies": {
+    "html-to-image": "1.11.13",
+    "jspdf": "2.5.2",
+    "jszip": "3.10.1",
+    "next": "16.3.1",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "@types/react": "19.2.0",
+    "@types/react-dom": "19.2.0",
+    "eslint": "9.17.0",
+    "eslint-config-next": "16.3.1",
+    "sharp": "0.34.5",
+    "typescript": "5.7.2"
+  }
+}

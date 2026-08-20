@@ -1,0 +1,14 @@
+{
+  "name": "Floatline",
+  "short_name": "Floatline",
+  "description": "Workflow automation for operators who run networks.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F2E8",
+  "theme_color": "#0B6B3A",
+  "icons": [
+    { "src": "/brand/favicon/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/favicon/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/favicon/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

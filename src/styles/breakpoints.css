@@ -1,0 +1,60 @@
+/* ============================================================
+   Breakpoints and the order-of-collapse.
+
+   Every route folds the same way, in this order:
+     1. side annotations drop
+     2. the index / TOC rail becomes a drawer (Escape closes it)
+     3. multi-column grids go to one column
+     4. the editor's three panes become stage + a bottom sheet
+
+   Fixed artboards are ARTWORK AT TRUE PIXEL SIZE. They are never squeezed to
+   fit — they scale with a transform inside a .scroll-x viewport. A 1080px
+   artboard that reflows is no longer the thing that gets exported.
+   ============================================================ */
+
+:root {
+  --bp-xs: 360px;
+  --bp-sm: 414px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  /* Every interactive target is at least this in both axes. Audited. */
+  --tap-min: 44px;
+
+  --page-max: 1240px;
+  --read-max: 68ch;
+}
+
+/* The single sanctioned way for something wider than the viewport to exist. */
+.scroll-x {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Nothing may push the page sideways. */
+html, body { max-width: 100%; overflow-x: clip; }
+
+img, svg, video { max-width: 100%; height: auto; }
+
+/* Grids that cannot overflow at 320px. */
+.auto-grid {
+  display: grid;
+  gap: var(--sp-5);
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+}
+.auto-grid-sm {
+  display: grid;
+  gap: var(--sp-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

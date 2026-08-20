@@ -1,0 +1,139 @@
+/* The studio. Three panes on desktop; stage + bottom sheet on a phone. */
+
+.ed {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 340px;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'top top top' 'rail stage panel';
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.ed-top {
+  grid-area: top;
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+  flex-wrap: wrap;
+}
+
+.ed-rail { grid-area: rail; border-right: 1px solid var(--border); overflow-y: auto; background: var(--bg-elev); }
+.ed-stage { grid-area: stage; overflow: auto; display: grid; place-items: center; padding: var(--sp-6); background: var(--fl-paper-2); }
+.ed-panel { grid-area: panel; border-left: 1px solid var(--border); overflow-y: auto; background: var(--bg-elev); padding: var(--sp-4); }
+
+.ed-group { padding: var(--sp-3) var(--sp-4) var(--sp-1); }
+.ed-brand { display: inline-flex; align-items: center; gap: var(--sp-2); min-height: var(--tap-min); padding: 0 var(--sp-2); border-radius: var(--r-md); text-decoration: none; }
+.ed-brand:hover { background: var(--fl-green-100); text-decoration: none; }
+.field-row { min-height: var(--tap-min); }
+.ed-item {
+  display: block; width: 100%; text-align: left;
+  min-height: var(--tap-min); padding: var(--sp-2) var(--sp-4);
+  border: 0; background: transparent; color: var(--fg-muted);
+  font: inherit; font-size: var(--fs-small); cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.ed-item:hover { background: color-mix(in srgb, var(--bg-elev) 92%, #000); }
+.ed-item[aria-current='true'] { background: var(--fl-green-100); color: var(--fl-green-900); font-weight: 700; border-left-color: var(--accent); }
+
+.ed-search { width: 100%; }
+
+/* Stage: a true-size node scaled by transform, with guides as SIBLINGS. */
+.stage-wrap { position: relative; display: inline-block; }
+.stage-scale { transform-origin: top left; }
+.stage-guide {
+  position: absolute; pointer-events: none;
+  border: 1.5px dashed var(--fl-red-600); opacity: 0.55;
+}
+.stage-guide-label {
+  position: absolute; bottom: 100%; left: 0; transform: translateY(-4px);
+  font-family: var(--font-mono); font-size: 11px; color: var(--fl-red-600);
+  white-space: nowrap;
+}
+.stage-clip {
+  margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm); background: var(--fl-red-100);
+  color: var(--fl-red-700); font-size: var(--fs-small); font-weight: 600;
+}
+
+.field { display: grid; gap: 6px; margin-bottom: var(--sp-4); }
+.field label { font-size: var(--fs-micro); text-transform: uppercase; letter-spacing: var(--tr-micro); font-weight: 700; color: var(--fg-subtle); }
+.field input[type='text'], .field textarea, .field select {
+  width: 100%; min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-strong); border-radius: var(--r-md);
+  background: var(--fl-white); color: var(--fg); font: inherit; font-size: var(--fs-body);
+}
+.field textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+.field-count { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--fg-faint); justify-self: end; }
+.field-count[data-over='true'] { color: var(--fl-red-600); font-weight: 700; }
+.field-row { display: flex; align-items: center; gap: var(--sp-2); min-height: var(--tap-min); }
+/* The label completes the checkbox's target, so it must fill the row. */
+.field-row label { display: flex; align-items: center; min-height: var(--tap-min); cursor: pointer; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.swatch {
+  min-width: var(--tap-min); min-height: var(--tap-min);
+  padding: 0 var(--sp-3); border-radius: var(--r-md);
+  border: 1px solid var(--border-strong); background: var(--bg-elev);
+  font: inherit; font-size: var(--fs-small); font-weight: 600; cursor: pointer; color: var(--fg);
+}
+.swatch[aria-pressed='true'] { border-color: var(--accent); box-shadow: var(--sh-focus); }
+
+.manifest {
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  max-height: 168px; overflow: auto;
+  background: var(--fl-paper-2); border-radius: var(--r-sm); padding: var(--sp-3);
+  color: var(--fg-subtle); line-height: 1.7;
+}
+
+.progress { height: 8px; border-radius: 999px; background: var(--fl-ink-5); overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--accent); transition: width var(--dur-base) var(--ease-out); }
+
+.note { font-size: var(--fs-small); color: var(--fg-subtle); line-height: 1.45; }
+.warn {
+  padding: var(--sp-3); border-radius: var(--r-md);
+  background: var(--fl-amber-100); color: var(--fl-amber-700);
+  font-size: var(--fs-small); font-weight: 600;
+}
+.err {
+  padding: var(--sp-3); border-radius: var(--r-md);
+  background: var(--fl-red-100); color: var(--fl-red-700);
+  font-size: var(--fs-small); font-weight: 600;
+}
+
+/* --- Collapse: rail becomes a drawer, panel becomes a bottom sheet. --- */
+@media (max-width: 1100px) {
+  .ed { grid-template-columns: 240px minmax(0, 1fr); grid-template-areas: 'top top' 'rail stage'; }
+  /* The panel becomes a bottom sheet. Its height is capped so the artboard —
+     the thing being edited — keeps more than half the screen; the sheet scrolls
+     internally rather than growing. */
+  .ed-panel {
+    grid-area: unset; position: fixed; inset: auto 0 0 0; z-index: var(--z-drawer);
+    max-height: 46dvh; border-left: 0; border-top: 1px solid var(--border);
+    box-shadow: var(--sh-3); border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding-top: var(--sp-5);
+  }
+  /* A grab handle, so the sheet reads as one. */
+  .ed-panel::before {
+    content: ''; position: absolute; top: var(--sp-2); left: 50%;
+    transform: translateX(-50%); width: 40px; height: 4px;
+    border-radius: 999px; background: var(--fl-ink-5);
+  }
+  .ed-stage { padding-bottom: calc(46dvh + var(--sp-4)); }
+}
+
+@media (max-width: 860px) {
+  .ed { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'top' 'stage'; }
+  .ed-rail {
+    position: fixed; inset: 0 auto 0 0; width: min(84vw, 320px); z-index: var(--z-drawer);
+    transform: translateX(-100%); transition: transform var(--dur-base) var(--ease-out);
+    box-shadow: var(--sh-3);
+  }
+  .ed-rail[data-open='true'] { transform: none; }
+  .ed-scrim {
+    position: fixed; inset: 0; z-index: calc(var(--z-drawer) - 1);
+    background: rgba(26, 20, 16, 0.45); border: 0;
+  }
+}
+@media (min-width: 861px) { .ed-scrim, .ed-rail-toggle { display: none; } }

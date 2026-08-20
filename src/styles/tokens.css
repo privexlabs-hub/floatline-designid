@@ -1,0 +1,192 @@
+/* ============================================================
+   Floatline — Design Tokens
+   Ported from the Claude Design project's colors_and_type.css.
+   Every --fl-* value is unchanged from the source of truth.
+
+   Two edits from the import, both deliberate:
+     1. The Google Fonts @import is gone. Faces are self-hosted in fonts.css.
+     2. The --wa-* channel block moved to ui-kits.css and gained siblings —
+        Floatline is not a WhatsApp product, it is an automation product that
+        speaks over many channels.
+   ============================================================ */
+
+:root {
+  /* ---------- COLOR — Brand ----------
+     Warm paper, deep operator green, and amber for the things that move value.
+     Avoid Western-SaaS blue-violet. */
+
+  --fl-green-900: #053D22;   /* deepest ink-green — display headings */
+  --fl-green-800: #0B6B3A;   /* PRIMARY brand green — buttons, logo */
+  --fl-green-700: #128A4C;   /* hover */
+  --fl-green-500: #29B26A;   /* success / on-track */
+  --fl-green-200: #C6E8D2;   /* success bg */
+  --fl-green-100: #E8F5EE;   /* soft tint */
+
+  --fl-amber-700: #B2731A;   /* hover */
+  --fl-amber-600: #E89B2C;   /* AMBER — capacity / float / value in motion */
+  --fl-amber-200: #FCE6BE;   /* badge bg */
+  --fl-amber-100: #FBF1DC;   /* soft tint */
+
+  --fl-red-700:   #A02418;   /* hover */
+  --fl-red-600:   #C8362A;   /* CRITICAL — failure / breach / no-show */
+  --fl-red-200:   #F4CFCB;
+  --fl-red-100:   #FBE9E6;
+
+  --fl-blue-600:  #2A5DB0;   /* informational only — sparingly */
+  --fl-blue-100:  #E4EDFA;
+
+  /* ---------- COLOR — Surfaces (warm neutrals) ---------- */
+  --fl-paper:     #F7F2E8;   /* APP BG — warm receipt-paper */
+  --fl-paper-2:   #F0E9D8;   /* alt bands, table stripes */
+  --fl-canvas:    #FBF8F0;   /* card surface on paper */
+  --fl-white:     #FFFFFF;
+
+  --fl-ink:       #1A1410;   /* primary text — warm near-black */
+  --fl-ink-2:     #3D332B;   /* secondary text */
+  --fl-ink-3:     #6B5F54;   /* tertiary, captions */
+  --fl-ink-4:     #9C8F82;   /* placeholders, faint dividers */
+  --fl-ink-5:     #D6CCBE;   /* hairlines on paper */
+
+  --fl-line:      rgba(26, 20, 16, 0.10);
+  --fl-line-2:    rgba(26, 20, 16, 0.18);
+
+  /* ---------- SEMANTIC ROLES ---------- */
+  --bg:           var(--fl-paper);
+  --bg-elev:      var(--fl-canvas);
+  --fg:           var(--fl-ink);
+  --fg-muted:     var(--fl-ink-2);
+  --fg-subtle:    var(--fl-ink-3);
+  --fg-faint:     var(--fl-ink-4);
+  --border:       var(--fl-line);
+  --border-strong:var(--fl-line-2);
+  --accent:       var(--fl-green-800);
+  --accent-on:    #FFFFFF;
+  --warning:      var(--fl-amber-600);
+  --danger:       var(--fl-red-600);
+  --success:      var(--fl-green-500);
+  --info:         var(--fl-blue-600);
+
+  /* ---------- TYPOGRAPHY — Families ---------- */
+  --font-display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --font-sans:    "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "JetBrains Mono", monospace;
+  --font-money:   "IBM Plex Mono", ui-monospace, monospace;
+
+  /* ---------- TYPOGRAPHY — Scale ---------- */
+  --fs-display-1: 64px;  --lh-display-1: 1.04;
+  --fs-display-2: 48px;  --lh-display-2: 1.06;
+  --fs-h1:        34px;  --lh-h1:        1.10;
+  --fs-h2:        26px;  --lh-h2:        1.16;
+  --fs-h3:        20px;  --lh-h3:        1.25;
+  --fs-h4:        17px;  --lh-h4:        1.30;
+  --fs-body:      15px;  --lh-body:      1.50;
+  --fs-body-lg:   17px;  --lh-body-lg:   1.50;
+  --fs-small:     13px;  --lh-small:     1.45;
+  --fs-micro:     11px;  --lh-micro:     1.30;
+
+  --tr-display:  -0.022em;
+  --tr-heading:  -0.012em;
+  --tr-body:      0;
+  --tr-micro:     0.06em;
+
+  /* ---------- SPACING (4-pt base) ---------- */
+  --sp-0:  0;    --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px;
+  --sp-4:  16px; --sp-5:  20px; --sp-6:  24px; --sp-7:  32px;
+  --sp-8:  40px; --sp-9:  56px; --sp-10: 72px; --sp-11: 96px;
+
+  /* ---------- RADII ---------- */
+  --r-xs:  4px;  --r-sm:  6px;  --r-md:  10px;
+  --r-lg:  14px; --r-xl:  20px; --r-pill: 999px;
+
+  /* ---------- SHADOW / ELEVATION — soft and WARM, never blue-black ------- */
+  --sh-flat:  none;
+  --sh-1:     0 1px 2px rgba(60, 40, 20, 0.06),
+              0 1px 1px rgba(60, 40, 20, 0.04);
+  --sh-2:     0 4px 12px -2px rgba(60, 40, 20, 0.10),
+              0 2px 4px rgba(60, 40, 20, 0.05);
+  --sh-3:     0 12px 32px -8px rgba(60, 40, 20, 0.18),
+              0 4px 8px rgba(60, 40, 20, 0.06);
+  --sh-press: inset 0 2px 0 rgba(0, 0, 0, 0.08);
+  --sh-focus: 0 0 0 3px rgba(11, 107, 58, 0.25);
+  --sh-focus-danger: 0 0 0 3px rgba(200, 54, 42, 0.22);
+
+  /* ---------- MOTION — quick and purposeful, no swooshes ---------- */
+  --ease-out:    cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in:     cubic-bezier(0.4, 0, 0.6, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast:    120ms;
+  --dur-base:    180ms;
+  --dur-slow:    280ms;
+
+  /* ---------- Z-INDEX ---------- */
+  --z-base: 0; --z-raised: 10; --z-sticky: 100; --z-drawer: 800;
+  --z-scrim: 900; --z-modal: 1000; --z-toast: 1100;
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   ============================================================ */
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .fl-h1 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-h1); line-height: var(--lh-h1);
+  letter-spacing: var(--tr-heading); color: var(--fl-green-900); margin: 0;
+}
+h2, .fl-h2 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-h2); line-height: var(--lh-h2);
+  letter-spacing: var(--tr-heading); color: var(--fl-green-900); margin: 0;
+}
+h3, .fl-h3 {
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-h3); line-height: var(--lh-h3);
+  letter-spacing: -0.005em; color: var(--fg); margin: 0;
+}
+h4, .fl-h4 {
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-h4); line-height: var(--lh-h4); color: var(--fg); margin: 0;
+}
+p, .fl-p {
+  font-family: var(--font-sans); font-size: var(--fs-body);
+  line-height: var(--lh-body); color: var(--fg-muted); margin: 0;
+  text-wrap: pretty;
+}
+.fl-display-1 {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: var(--fs-display-1); line-height: var(--lh-display-1);
+  letter-spacing: var(--tr-display); color: var(--fl-green-900);
+}
+.fl-display-2 {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--fs-display-2); line-height: var(--lh-display-2);
+  letter-spacing: var(--tr-display); color: var(--fl-green-900);
+}
+.fl-small  { font-size: var(--fs-small);  line-height: var(--lh-small); }
+.fl-micro  {
+  font-size: var(--fs-micro); line-height: var(--lh-micro);
+  text-transform: uppercase; letter-spacing: var(--tr-micro);
+  font-weight: 600; color: var(--fg-subtle);
+}
+.fl-mono   { font-family: var(--font-mono); }
+.fl-money  { font-family: var(--font-money); font-feature-settings: "tnum"; }
+code, .fl-code {
+  font-family: var(--font-mono); font-size: 0.92em;
+  background: rgba(26, 20, 16, 0.06); padding: 1px 5px; border-radius: var(--r-sm);
+}
+
+/* Receipt rule — the recurring Floatline motif (POS DNA, kept). */
+.fl-receipt-rule {
+  border: 0;
+  border-top: 1.5px dashed var(--fl-ink-5);
+  margin: var(--sp-4) 0;
+}

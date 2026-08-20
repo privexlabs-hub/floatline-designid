@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Floatline">
+  <!-- Simplified mark. The full logo's five dots vanish below ~24px, so the
+       favicon carries the rounded square + the two-tone float bar only. -->
+  <rect x="0" y="0" width="96" height="96" rx="22" fill="#0B6B3A"/>
+  <rect x="16" y="26" width="64" height="14" rx="7" fill="#F7F2E8"/>
+  <rect x="16" y="52" width="64" height="14" rx="7" fill="#053D22"/>
+  <rect x="16" y="52" width="38" height="14" rx="7" fill="#E89B2C"/>
+</svg>

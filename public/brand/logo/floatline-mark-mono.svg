@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Floatline mark, one colour">
+  <rect x="0" y="0" width="96" height="96" rx="22" fill="currentColor"/>
+  <rect x="18" y="28" width="60" height="10" rx="5" fill="#FFFFFF"/>
+  <rect x="18" y="46" width="60" height="10" rx="5" fill="#FFFFFF" opacity="0.35"/>
+  <rect x="18" y="46" width="34" height="10" rx="5" fill="#FFFFFF"/>
+  <rect x="50" y="42" width="4" height="18" rx="2" fill="currentColor"/>
+  <circle cx="24" cy="70" r="3" fill="#FFFFFF"/>
+  <circle cx="36" cy="70" r="3" fill="#FFFFFF"/>
+  <circle cx="48" cy="70" r="3" fill="#FFFFFF" opacity="0.45"/>
+  <circle cx="60" cy="70" r="3" fill="#FFFFFF"/>
+  <circle cx="72" cy="70" r="3" fill="#FFFFFF"/>
+</svg>

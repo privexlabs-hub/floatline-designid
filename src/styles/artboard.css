@@ -1,0 +1,122 @@
+/* ============================================================
+   Artboard theming.
+
+   THE RULE: no layout and no primitive may read a raw --fl-* token. They read
+   --art-* only. That single constraint is what lets one component render
+   correctly on all seven surfaces — and what stops a "just this once" hex from
+   quietly breaking the ink and green variants.
+   ============================================================ */
+
+.artboard-export {
+  position: relative;
+  overflow: hidden;
+  background: var(--art-bg);
+  color: var(--art-fg);
+  font-family: var(--font-sans);
+  /* Fixed pixel artwork. Never squeezed — the Stage scales it with a transform. */
+  flex: none;
+}
+
+.artboard-export *,
+.artboard-export *::before,
+.artboard-export *::after { box-sizing: border-box; }
+
+/* ---------- Surfaces ---------- */
+
+.artboard-export[data-surface='paper'] {
+  --art-bg: #F7F2E8;
+  --art-fg: #053D22;
+  --art-fg-2: #1A1410;
+  --art-muted: #6B5F54;
+  --art-accent: #0B6B3A;
+  --art-accent-fg: #F7F2E8;
+  --art-signal: #E89B2C;
+  --art-rule: rgba(26, 20, 16, 0.18);
+}
+.artboard-export[data-surface='canvas'] {
+  --art-bg: #FBF8F0;
+  --art-fg: #053D22;
+  --art-fg-2: #3D332B;
+  --art-muted: #6B5F54;
+  --art-accent: #0B6B3A;
+  --art-accent-fg: #FBF8F0;
+  --art-signal: #B2731A;
+  --art-rule: rgba(26, 20, 16, 0.14);
+}
+.artboard-export[data-surface='ink'] {
+  --art-bg: #1A1410;
+  --art-fg: #F7F2E8;
+  --art-fg-2: #E4DDD0;
+  --art-muted: #9C8F82;
+  --art-accent: #29B26A;
+  --art-accent-fg: #053D22;
+  --art-signal: #E89B2C;
+  --art-rule: rgba(247, 242, 232, 0.22);
+}
+.artboard-export[data-surface='green'] {
+  --art-bg: #053D22;
+  --art-fg: #F7F2E8;
+  --art-fg-2: #E8F5EE;
+  --art-muted: #A9C6B5;
+  --art-accent: #E89B2C;
+  --art-accent-fg: #053D22;
+  --art-signal: #E89B2C;
+  --art-rule: rgba(247, 242, 232, 0.24);
+}
+.artboard-export[data-surface='amber'] {
+  --art-bg: #FBF1DC;
+  --art-fg: #1A1410;
+  --art-fg-2: #3D332B;
+  --art-muted: #8A6A34;
+  --art-accent: #B2731A;
+  --art-accent-fg: #FBF1DC;
+  --art-signal: #0B6B3A;
+  --art-rule: rgba(178, 115, 26, 0.30);
+}
+.artboard-export[data-surface='mono'] {
+  --art-bg: #FFFFFF;
+  --art-fg: #1A1410;
+  --art-fg-2: #1A1410;
+  --art-muted: #6B5F54;
+  --art-accent: #1A1410;
+  --art-accent-fg: #FFFFFF;
+  --art-signal: #1A1410;
+  --art-rule: rgba(26, 20, 16, 0.28);
+}
+.artboard-export[data-surface='inverted'] {
+  --art-bg: #0B6B3A;
+  --art-fg: #F7F2E8;
+  --art-fg-2: #FFFFFF;
+  --art-muted: #BFDCCB;
+  --art-accent: #F7F2E8;
+  --art-accent-fg: #0B6B3A;
+  --art-signal: #FCE6BE;
+  --art-rule: rgba(247, 242, 232, 0.30);
+}
+
+/* ---------- Grain ----------
+   The receipt-paper texture, as an overlay rather than a background-image on
+   the artboard itself, so a layout is free to paint its own panels underneath. */
+.artboard-export[data-grain='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('/brand/textures/pattern-receipt-paper.svg');
+  background-size: 600px auto;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+.artboard-export[data-surface='ink'][data-grain='true']::after,
+.artboard-export[data-surface='green'][data-grain='true']::after {
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+
+/* Receipt rule inside artwork — proportional, so it survives every canvas. */
+.art-rule {
+  border: 0;
+  border-top: 0.14em dashed var(--art-rule);
+  width: 100%;
+  margin: 0;
+}

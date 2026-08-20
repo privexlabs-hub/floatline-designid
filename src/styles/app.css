@@ -1,0 +1,126 @@
+/* App chrome — everything outside an artboard. */
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+/* The spike harness clips from (0,0); no page chrome may offset it. */
+body:has(> [data-spike]) { margin: 0; padding: 0; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+:focus-visible { outline: none; box-shadow: var(--sh-focus); border-radius: var(--r-sm); }
+
+.shell { max-width: var(--page-max); margin: 0 auto; padding: 0 var(--sp-5); }
+
+.stack { display: grid; gap: var(--sp-4); }
+.row { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  padding: var(--sp-5);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
+  min-height: var(--tap-min); padding: 0 var(--sp-5);
+  border-radius: var(--r-md); border: 1px solid var(--border-strong);
+  background: var(--bg-elev); color: var(--fg);
+  font: inherit; font-weight: 600; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.btn:hover { background: color-mix(in srgb, var(--bg-elev) 94%, #000); }
+.btn:active { box-shadow: var(--sh-press); transform: translateY(1px); }
+.btn[data-tone='primary'] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+.btn[data-tone='primary']:hover { background: var(--fl-green-700); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  padding: 3px var(--sp-3); border-radius: var(--r-pill);
+  border: 1px solid var(--border); background: var(--bg-elev);
+  font-size: var(--fs-micro); font-weight: 600; letter-spacing: var(--tr-micro);
+  text-transform: uppercase; color: var(--fg-subtle);
+}
+
+.receipt { border: 0; border-top: 1.5px dashed var(--fl-ink-5); margin: var(--sp-5) 0; }
+
+.hero-pattern {
+  background-image: url('/brand/textures/pattern-receipt-paper.svg');
+  background-size: 600px auto;
+}
+
+/* Design-system reference */
+.ds-block { padding-block: var(--sp-7); }
+.ds-block + .ds-block { border-top: 1.5px dashed var(--fl-ink-5); }
+.ds-grid { margin-top: var(--sp-4); }
+.ds-swatch {
+  border-radius: var(--r-md); padding: var(--sp-4); min-height: 104px;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 2px;
+  border: 1px solid var(--border);
+}
+.ds-swatch b { font-size: var(--fs-small); }
+.ds-swatch code { background: transparent; padding: 0; font-size: var(--fs-micro); }
+.ds-drift {
+  margin-top: 6px; font-size: var(--fs-micro); font-weight: 700;
+  background: var(--fl-red-600); color: #fff; padding: 2px 6px; border-radius: var(--r-xs);
+}
+.ds-type-row {
+  display: grid; grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--sp-4); align-items: baseline;
+  padding-block: var(--sp-2); border-bottom: 1px solid var(--border);
+}
+.ds-type-meta { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--fg-faint); }
+.ds-icon {
+  display: grid; gap: 8px; place-items: center; min-height: var(--tap-min);
+  padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-elev); color: var(--fg); text-decoration: none;
+}
+.ds-icon:hover { background: var(--fl-green-100); text-decoration: none; }
+.ds-icon code { background: transparent; font-size: 10px; color: var(--fg-subtle); }
+.ds-lockup {
+  border-radius: var(--r-lg); border: 1px solid var(--border);
+  padding: var(--sp-7); display: grid; place-items: center; min-height: 160px;
+}
+@media (max-width: 600px) {
+  .ds-type-row { grid-template-columns: minmax(0, 1fr); gap: var(--sp-1); }
+}
+
+/* Brand icons.
+
+   Loaded as a CSS mask rather than an <img>. The glyphs are drawn with
+   stroke="currentColor", which an <img> cannot inherit — it would paint them
+   the SVG's own default black. A mask lets the icon take a brand colour and
+   keeps it a single request. */
+.icon {
+  display: inline-block;
+  width: 22px; height: 22px; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+.icon-lg { width: 28px; height: 28px; }
+
+.cap-head { display: flex; align-items: flex-start; gap: var(--sp-3); flex-wrap: nowrap; }
+.cap-head h3 { min-width: 0; }
+
+/* Tap targets. Everything interactive clears 44px in both axes — audited at
+   seven widths by scripts/audit-responsive.mjs. */
+.tag-link {
+  display: inline-flex; align-items: center; gap: var(--sp-2);
+  min-height: var(--tap-min); padding: 0 var(--sp-3);
+  border-radius: var(--r-pill); border: 1px solid var(--border);
+  background: var(--bg-elev); color: var(--fg-subtle);
+  font-size: var(--fs-micro); font-weight: 700;
+  letter-spacing: var(--tr-micro); text-transform: uppercase;
+  text-decoration: none;
+}
+.tag-link:hover { background: var(--fl-green-100); color: var(--fl-green-900); text-decoration: none; }
+
+/* A checkbox is a 44px row: the box itself is 22px and the linked label
+   completes the target, which is what a pointer actually hits. */
+input[type='checkbox'], input[type='radio'] {
+  width: 22px; height: 22px; accent-color: var(--accent); flex: none; margin: 0;
+}
