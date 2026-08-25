@@ -1,5 +1,5 @@
 import { Artboard } from '../Artboard';
-import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Quote, RowList, ReceiptRule, CtaFooter, Chip, Stat, FloatBar, Panel } from '../primitives';
+import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Quote, RowList, ReceiptRule, CtaFooter, Chip, Stat, FloatBar, Panel, CustomerLogo } from '../primitives';
 import { str, arr, type LayoutBaseProps } from './types';
 
 /**
@@ -67,7 +67,10 @@ export function EngagementPost(p: LayoutBaseProps) {
             <Quote u={u} size={50}>“{str(p.quote)}”</Quote>
             <ReceiptRule u={u} opacity={0.7} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 24 * u }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 23 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+              <div style={{ display: 'grid', gap: 12 * u }}>
+                {p.logo !== undefined ? <CustomerLogo u={u} src={str(p.logo)} height={40} /> : null}
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 23 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+              </div>
               <Stat u={u} value={str(p.stat)} size={92} />
             </div>
           </>

@@ -14,8 +14,9 @@
     "fonts:verify": "node scripts/verify-fonts.mjs",
     "fonts:css": "node scripts/build-font-css.mjs",
     "assets:build": "node --experimental-strip-types --no-warnings scripts/build-brand-assets.mjs",
-    "verify": "node --experimental-strip-types --no-warnings scripts/verify-app.mjs && node scripts/verify-layout.mjs && node scripts/verify-export.mjs && node scripts/verify-fidelity.mjs",
-    "audit": "node scripts/audit-responsive.mjs"
+    "verify": "node --experimental-strip-types --no-warnings scripts/verify-app.mjs && node --experimental-strip-types --no-warnings scripts/verify-voice.mjs && node scripts/verify-layout.mjs && node scripts/verify-export.mjs && node scripts/verify-sequences.mjs && node scripts/verify-fidelity.mjs",
+    "audit": "node scripts/audit-responsive.mjs",
+    "verify:voice": "node --experimental-strip-types --no-warnings scripts/verify-voice.mjs"
   },
   "dependencies": {
     "html-to-image": "1.11.13",

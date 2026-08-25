@@ -16,7 +16,8 @@ export type Field =
 
 export type LayoutId =
   | 'square' | 'engagement' | 'carousel' | 'vertical' | 'portrait'
-  | 'ytThumb' | 'cover' | 'avatar' | 'ad' | 'email' | 'web' | 'profile' | 'kit';
+  | 'ytThumb' | 'cover' | 'avatar' | 'ad' | 'email' | 'web' | 'profile' | 'kit'
+  | 'docPage';
 
 export type Platform = 'x' | 'linkedin' | 'instagram' | 'youtube' | 'email' | 'web' | 'facebook' | 'tiktok';
 

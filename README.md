@@ -47,9 +47,10 @@ vertical re-fills all 168 templates with the right vocabulary.
 
 | Route | What it is |
 |---|---|
-| `/` | The four doors, and the thesis in one screen |
+| `/` | The five doors, and the thesis in one screen |
 | `/playbook` | 18 sections: positioning, channels, voice, visual identity, formats, cadence, governance |
-| `/editor` | The studio — 168 templates, live editing, real export |
+| `/editor` | The studio — 191 templates, live editing, real export |
+| `/decks` | Ordered sequences — carousels, reports, whitepapers, proposals, pitch decks |
 | `/design-system` | Foundations read back out of the live stylesheet, plus every downloadable asset |
 | `/ui-kits` | The brand on product surfaces, as live responsive React |
 | `/spike` | Not linked. The harness the verification scripts drive. |
@@ -58,7 +59,7 @@ vertical re-fills all 168 templates with the right vocabulary.
 
 ## The studio
 
-**168 templates across 13 layouts and 13 groups**, covering every format in the
+**191 templates across 14 layouts and 15 groups**, covering every format in the
 brief plus the additions noted below.
 
 | Group | Count | Group | Count |
@@ -69,7 +70,8 @@ brief plus the additions noted below.
 | Vertical · 1080×1920 | 17 | Email · Multi-format | 11 |
 | Portrait · 1080×1350 | 11 | Web · Multi-format | 14 |
 | YouTube · 1280×720 | 15 | Profile · Reference | 3 |
-| | | Product · Kit showcase | 4 |
+| Document · A4 | 14 | Product · Kit showcase | 4 |
+| Presentation · 1920×1080 | 9 | | |
 
 Seven surfaces (paper, canvas, ink, green, amber, mono, inverted), an optional
 receipt-paper grain, five verticals and six currencies apply to every template.
@@ -78,9 +80,61 @@ which is what lets one component render correctly on all seven grounds instead
 of needing seven components.
 
 Export is **PNG, JPEG, WebP, SVG and PDF at 1×, 2× and 3×** — one asset at a
-time, a whole group, or all 168 as a ZIP with an `alt-text.csv` sidecar (because
+time, a whole group, or all 191 as a ZIP with an `alt-text.csv` sidecar (because
 platforms drop alt text on upload, and whoever posts the image will not retype
-it).
+it). Alt text is generated from the copy and can be overridden per design.
+
+---
+
+## Decks and documents
+
+A carousel and a report are the same problem — N artboards in an order somebody
+controls — so `/decks` is one engine for both. Add, duplicate, reorder and delete
+pages; export the whole run as **one ordered PDF** or as numbered files.
+
+Eight starting points, each composed from templates that already exist rather
+than from a second copy of the artwork: LinkedIn carousel, story sequence,
+report, whitepaper, case study, proposal, one-pager and pitch deck.
+
+- **The table of contents is computed**, not typed. It reads the real pages and
+  their real numbers, so it cannot go stale when a page moves.
+- **Covers and back pages are never numbered**, and numbering starts after the
+  cover.
+- **Pages carry stable ids.** The sibling project this pattern came from keys
+  slides by array index and has no reorder at all; both were avoidable.
+- **`filenameFor`'s `slide` parameter finally has a caller.** It shipped in
+  Phase 1 and was never passed — a deck page and a single artboard are named by
+  the same function.
+
+### PDF page size
+
+Page boxes are in **points, computed from each canvas's design resolution**, so
+a report prints as real A4 (595 × 842pt at 150dpi) while a 1080px square is
+810pt at 96dpi. jsPDF's `px` unit would have made every unit a CSS pixel, and an
+A4 page drawn at 150dpi opened at 23 × 33 inches.
+
+---
+
+## Voice checking
+
+The playbook's governance section says: *"Where a rule can be a check that fails
+a build, it is one."* So the voice rules are now code, in `src/lib/voice.ts`,
+read from the same `VOICE` and `NON_NEGOTIABLES` constants the playbook renders.
+
+They run in two places from one definition:
+
+- **In the studio**, as a panel under the fields. Each finding names the
+  offending text, what to write instead, and the playbook section it comes from.
+  Advisory — the playbook is explicit that a human judges whether copy *sounds*
+  right, and a regex cannot.
+- **As a build gate**, `npm run verify:voice`, over every template's default
+  copy. It fails on `error` severity only: exclamation points, SaaS abstraction
+  (`leverage`, `seamless`, `empower`, `unlock` …), `NGN 25,000` instead of
+  `₦25,000`, and “users”.
+
+Warn-level rules are deliberately outside the gate. *“64% of inbound answered
+from the knowledge base”* is a real statistic with no meaningful denominator, and
+a build that refused it would be wrong.
 
 ### The export contract
 
@@ -115,10 +169,10 @@ export panel, not hidden.
 
 ---
 
-## Two bugs worth knowing about
+## Bugs worth knowing about
 
-Both were found by looking at exported pixels rather than at the screen, and
-both now have a guard that is proven to fail without the fix.
+All were found by looking at exported pixels rather than at the screen, and each
+has a guard that is proven to fail without the fix.
 
 **1. Every logo rasterised as a solid black square.**
 html-to-image deep-clones inline SVG subtrees *verbatim* — it does not apply
@@ -147,6 +201,23 @@ reproduce it (our stylesheets are present here and absent inside the exported
 antialiasing — measured, on the 3000×3000 cover, at a mean delta of **6.1**
 broken against **5.2** healthy.
 
+**3. Text one rounding error from re-wrapping.**
+The same pinning, a subtler trigger: a block whose *last line is nearly full*
+gains a line in the export and spills, even though its container is full width.
+A carousel headline that read across two lines on screen broke onto three in the
+PDF and sat on top of the lede.
+**Guard:** `verify-layout` squeezes every text block by 1.5% and fails if the
+line count goes up — measuring the risk directly rather than guessing which
+metric moved. It found six fragile templates out of 191, including the one that
+broke.
+
+**4. Content taller than its page.**
+A document page whose copy overran its own artboard put the running footer on
+top of the last line.
+**Guard:** `verify-layout` also compares each artboard's scroll height to its
+box. It found twelve on the day it was written — including one email template
+that had been shipping broken since Phase 1.
+
 ---
 
 ## Verification
@@ -161,17 +232,20 @@ npm run typecheck && npm run lint
 npm run build            # prebuild gate: verify-fonts
 
 npm start                # serves out/ on :4321
-npm run verify           # app + layout + export + fidelity
-npm run audit            # 5 routes × 7 widths
+npm run verify           # app · voice · layout · export · sequences · fidelity
+npm run verify:voice     # the copy gate on its own
+npm run audit            # 6 routes × 7 widths
 ```
 
 | Suite | What it proves |
 |---|---|
-| `verify-app` | Every route renders with no console errors; **zero third-party requests**; all three brand faces really load; `artboard.css` and `tokens.ts` agree on all 7 surfaces. |
-| `verify-layout` | All 168 templates lay out with slack — no shrink-to-fit text box that the export has no room to re-wrap. |
+| `verify-app` | Every route renders with no console errors; **zero third-party requests**; all three brand faces really load; `artboard.css` and `tokens.ts` agree on all 7 surfaces; **every text pair clears WCAG AA**. |
+| `verify-voice` | No template ships copy that breaks a stated brand rule. |
+| `verify-layout` | All 191 templates lay out with slack — nothing overflows its page, no shrink-to-fit box, no text a rounding error from re-wrapping. |
 | `verify-export` | Exact pixel dimensions in all 5 formats at 1×–3×; non-blank; JPEG flattened onto the surface colour, not black; the logo survives rasterisation; webfonts embedded. |
-| `verify-fidelity` | What the stage shows is what the file contains, across 14 layouts. |
-| `audit-responsive` | No sideways scroll, no over-wide element outside `.scroll-x`, no tap target under 44px. |
+| `verify-sequences` | A deck exports as one ordered PDF with a page per slide; a document's pages are real A4; filenames are zero-padded and sort into order; an uploaded customer logo is in the PNG. |
+| `verify-fidelity` | What the stage shows is what the file contains, across 17 layouts. |
+| `audit-responsive` | 6 routes × 7 widths. No sideways scroll, no over-wide element outside `.scroll-x`, no tap target under 44px. |
 
 All headless-Chrome scripts drive Chrome over raw CDP through Node's built-in
 `WebSocket` — no Puppeteer. Set `CHROME_PATH` if Chrome is installed elsewhere,
@@ -216,6 +290,19 @@ Each is a considered decision, not a slip.
 7. **Lucide remains a substitution.** Ten brand glyphs are drawn in-house; there
    is still no bespoke Floatline icon set, and that should be flagged before
    anyone commissions one.
+8. **`--fl-amber-800` was added to the ramp.** Amber `#E89B2C` on warm paper
+   measures **2.06:1** — a WCAG failure even at display size — and it was being
+   used for 20px eyebrow labels. No existing token changed: amber is still
+   `#E89B2C` for the float bar, chip fills and the logo, where the text rules do
+   not apply. Amber *type* on a light ground uses `#8A5A12`, the lightest amber
+   that clears 4.5:1 on paper, canvas and the amber tint (5.30 / 5.57 / 5.27).
+   `/design-system` shows the measurements.
+9. **Image fields are for customer logos and product screenshots only.** The
+   `image` type shipped in Phase 1 with no producer and no consumer. It is wired
+   now, within non-negotiable #7 — avatars stay initials on a colour, and there
+   is still no stock photography. Uploads are downscaled to 1600px before they
+   enter `localStorage`, because a 4 MB photo becomes 5.5 MB of base64 and would
+   evict everything else.
 
 ## Known limits
 

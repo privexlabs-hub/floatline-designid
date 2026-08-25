@@ -1,6 +1,6 @@
 import { CANVAS } from '@/lib/artboard-sizes';
 import type { Preset, Field } from '../types';
-import { text, area, lines, eyebrow, title, body, cta, url, badge } from '../fields';
+import { text, area, lines, eyebrow, title, body, cta, url, badge, image } from '../fields';
 import type { Surface } from '@/lib/tokens';
 
 const G = 'Engagement · 1080×1080';
@@ -119,6 +119,7 @@ export const ENGAGEMENT_PRESETS: Preset[] = [
     eyebrow('Proof'),
     area('quote', 'Quote', 'Rolling out a price change used to take three days and two arguments.', 200),
     text('attribution', 'Attribution', 'Area manager · 20 outlets'),
+    image('logo', 'Customer logo'),
     text('stat', 'Stat', '20 / 20'),
     url(),
   ]),

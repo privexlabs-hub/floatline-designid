@@ -7,8 +7,9 @@
  */
 import { launch, goto, evaluate, ORIGIN } from './lib-cdp.mjs';
 import { SURFACE_ART } from '../src/lib/tokens.ts';
+import { ratio } from '../src/lib/contrast.ts';
 
-const ROUTES = ['/', '/playbook/', '/editor/', '/design-system/', '/ui-kits/'];
+const ROUTES = ['/', '/playbook/', '/editor/', '/decks/', '/design-system/', '/ui-kits/'];
 
 const fails = [];
 const ok = (m) => console.log(`  ok   ${m}`);
@@ -124,6 +125,19 @@ async function main() {
       }
     }
     if (drift === 0) ok(`artboard.css and tokens.ts agree on all ${Object.keys(SURFACE_ART).length} surfaces`);
+
+    // Contrast. Only the TEXT roles: `signal` and `accent` are fills, and WCAG
+    // asks nothing of a decorative shape. `signalText` exists precisely because
+    // amber-on-paper failed this at 2.06.
+    let lowContrast = 0;
+    for (const [surface, p] of Object.entries(SURFACE_ART)) {
+      for (const role of ['fg', 'fg2', 'muted', 'signalText']) {
+        const r = ratio(p[role], p.bg);
+        if (r === null) { bad(`surface ${surface}.${role} is not a parseable colour`); lowContrast++; continue; }
+        if (r < 4.5) { bad(`surface ${surface}.${role} is ${r.toFixed(2)}:1 against its ground — below WCAG AA`); lowContrast++; }
+      }
+    }
+    if (lowContrast === 0) ok('every text pair on every surface clears WCAG AA');
   } finally {
     await close();
   }

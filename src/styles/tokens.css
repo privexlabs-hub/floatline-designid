@@ -22,10 +22,18 @@
   --fl-green-200: #C6E8D2;   /* success bg */
   --fl-green-100: #E8F5EE;   /* soft tint */
 
+  --fl-amber-800: #8A5A12;   /* amber TYPE on light grounds — see note below */
   --fl-amber-700: #B2731A;   /* hover */
   --fl-amber-600: #E89B2C;   /* AMBER — capacity / float / value in motion */
   --fl-amber-200: #FCE6BE;   /* badge bg */
   --fl-amber-100: #FBF1DC;   /* soft tint */
+
+  /* --fl-amber-800 exists because amber #E89B2C on warm paper measures 2.06:1,
+     which fails WCAG even for large text. Amber is unchanged for GRAPHICS —
+     the float bar, chip fills, the logo — where the text rules do not apply.
+     Amber TYPE on a light ground uses the darker step, which measures
+     5.30 on paper, 5.57 on canvas and 5.27 on the amber tint. See
+     src/lib/contrast.ts and the audit on /design-system. */
 
   --fl-red-700:   #A02418;   /* hover */
   --fl-red-600:   #C8362A;   /* CRITICAL — failure / breach / no-show */

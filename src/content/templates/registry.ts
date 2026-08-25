@@ -13,6 +13,7 @@ import { EmailBlock } from '@/components/artboard/layouts/EmailBlock';
 import { WebBlock } from '@/components/artboard/layouts/WebBlock';
 import { ProfileMock } from '@/components/artboard/layouts/ProfileMock';
 import { KitShowcase } from '@/components/artboard/layouts/KitShowcase';
+import { DocPage } from '@/components/artboard/layouts/DocPage';
 
 import type { LayoutId, Preset } from './types';
 import { SQUARE_PRESETS } from './presets/square';
@@ -28,6 +29,7 @@ import { EMAIL_PRESETS } from './presets/email';
 import { WEB_PRESETS } from './presets/web';
 import { PROFILE_PRESETS } from './presets/profile';
 import { KIT_PRESETS } from './presets/kits';
+import { DOCUMENT_PRESETS, PRESENTATION_PRESETS } from './presets/documents';
 
 export const LAYOUTS: Record<LayoutId, ComponentType<LayoutBaseProps>> = {
   square: SquarePost,
@@ -43,6 +45,7 @@ export const LAYOUTS: Record<LayoutId, ComponentType<LayoutBaseProps>> = {
   web: WebBlock,
   profile: ProfileMock,
   kit: KitShowcase,
+  docPage: DocPage,
 };
 
 export const PRESETS: Preset[] = [
@@ -59,6 +62,8 @@ export const PRESETS: Preset[] = [
   ...WEB_PRESETS,
   ...PROFILE_PRESETS,
   ...KIT_PRESETS,
+  ...DOCUMENT_PRESETS,
+  ...PRESENTATION_PRESETS,
 ];
 
 /** Group order in the picker — the headings from the brief, in its order. */
@@ -76,6 +81,8 @@ export const GROUP_ORDER = [
   'Web · Multi-format',
   'Profile · Reference',
   'Product · Kit showcase',
+  'Document · A4',
+  'Presentation · 1920×1080',
 ] as const;
 
 export const GROUPED: { group: string; presets: Preset[] }[] = GROUP_ORDER.map((group) => ({

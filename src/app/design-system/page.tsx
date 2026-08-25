@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ColourRamps, SurfaceGrid, TypeScale, SpacingScale, Radii, Shadows } from './Foundations';
+import { ContrastAudit, BrandKitButton } from './Contrast';
 import { AUTOMATION_ICONS, MARKS, TEXTURES } from '@/lib/tokens';
 import { LOCKUP } from '@/lib/brand-geometry';
 
@@ -81,23 +82,27 @@ export default function Page() {
         <SurfaceGrid />
       </Block>
 
-      <Block id="type" n="02" title="Type scale" lead="Bricolage Grotesque for display, Manrope for UI and body, IBM Plex Mono for money and IDs. All self-hosted.">
+      <Block id="contrast" n="02" title="Contrast" lead="WCAG 2.1, computed from the surface tokens. Amber is split: #E89B2C stays the graphic colour on every surface, and amber TYPE on a light ground uses the darker #8A5A12 step, because #E89B2C on warm paper measures 2.06:1.">
+        <ContrastAudit />
+      </Block>
+
+      <Block id="type" n="03" title="Type scale" lead="Bricolage Grotesque for display, Manrope for UI and body, IBM Plex Mono for money and IDs. All self-hosted.">
         <TypeScale />
       </Block>
 
-      <Block id="spacing" n="03" title="Spacing" lead="A 4-point base grid.">
+      <Block id="spacing" n="04" title="Spacing" lead="A 4-point base grid.">
         <SpacingScale />
       </Block>
 
-      <Block id="radii" n="04" title="Radii" lead="Gently rounded, not pill-everywhere. Receipt blocks stay sharper on purpose.">
+      <Block id="radii" n="05" title="Radii" lead="Gently rounded, not pill-everywhere. Receipt blocks stay sharper on purpose.">
         <Radii />
       </Block>
 
-      <Block id="shadow" n="05" title="Elevation" lead="Warm-tinted, never blue-black. Three steps and a press state.">
+      <Block id="shadow" n="06" title="Elevation" lead="Warm-tinted, never blue-black. Three steps and a press state.">
         <Shadows />
       </Block>
 
-      <Block id="motifs" n="06" title="Motifs" lead="Four shapes that make a layout unmistakably Floatline before a word is read.">
+      <Block id="motifs" n="07" title="Motifs" lead="Four shapes that make a layout unmistakably Floatline before a word is read.">
         <div className="auto-grid ds-grid">
           <div className="card">
             <h4>Float bar</h4>
@@ -130,7 +135,7 @@ export default function Page() {
         </div>
       </Block>
 
-      <Block id="icons" n="07" title="Iconography" lead="Lucide is the line-icon source of truth — a substitution, not a bespoke set. These ten glyphs are drawn in-house because they carry brand meaning nothing generic can.">
+      <Block id="icons" n="08" title="Iconography" lead="Lucide is the line-icon source of truth — a substitution, not a bespoke set. These ten glyphs are drawn in-house because they carry brand meaning nothing generic can.">
         <div className="auto-grid-sm ds-grid">
           {AUTOMATION_ICONS.map((name) => (
             <a key={name} href={`/brand/icons/${name}.svg`} download className="ds-icon">
@@ -146,7 +151,7 @@ export default function Page() {
         </div>
       </Block>
 
-      <Block id="logo" n="08" title="Logo" lead={`Clear space is ${LOCKUP.clearSpace}× the mark's height on every side. Minimum mark size ${LOCKUP.minMarkSize}px; below ${LOCKUP.minWordmarkWidth}px wide, drop the wordmark.`}>
+      <Block id="logo" n="09" title="Logo" lead={`Clear space is ${LOCKUP.clearSpace}× the mark's height on every side. Minimum mark size ${LOCKUP.minMarkSize}px; below ${LOCKUP.minWordmarkWidth}px wide, drop the wordmark.`}>
         <div className="auto-grid ds-grid">
           <div className="ds-lockup" style={{ background: 'var(--fl-paper)' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -163,7 +168,8 @@ export default function Page() {
         </div>
       </Block>
 
-      <Block id="assets" n="09" title="Assets" lead="Every brand file, downloadable. Rasters are generated from the SVG sources by npm run assets:build — none is hand-placed.">
+      <Block id="assets" n="10" title="Assets" lead="Every brand file, downloadable — individually below, or the whole kit as one archive.">
+        <BrandKitButton />
         {ASSETS.map((g) => (
           <div key={g.group} style={{ marginBottom: 'var(--sp-6)' }}>
             <h3>{g.group}</h3>

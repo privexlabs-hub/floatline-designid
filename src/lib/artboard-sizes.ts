@@ -39,6 +39,12 @@ export const CANVAS = {
   emailBody: { w: 600, h: 800 },
   emailBanner: { w: 1200, h: 400 },
 
+  /* Long-form pages. A4 and Letter at 150dpi — enough to print acceptably,
+     small enough that a twenty-page document does not exhaust the canvas. */
+  docA4: { w: 1240, h: 1754 },
+  docLetter: { w: 1275, h: 1650 },
+  slide169: { w: 1920, h: 1080 },
+
   webHero: { w: 1600, h: 900 },
   webBanner: { w: 1920, h: 600 },
 } as const satisfies Record<string, Size>;
@@ -74,6 +80,30 @@ export const SAFE_AREAS: Partial<Record<CanvasName, SafeArea>> = {
   // GitHub crops the social preview to roughly 2:1 in some surfaces.
   githubSocial: { top: 40, right: 60, bottom: 40, left: 60, note: 'Repo card crop' },
 };
+
+/**
+ * The resolution a canvas is designed at, for anything that needs a PHYSICAL
+ * size rather than a pixel one — which in practice means the PDF page box.
+ *
+ * The document canvases are drawn at 150dpi, so 1240x1754 is exactly A4 and
+ * 1275x1650 is exactly US Letter. Everything else is a screen artefact with no
+ * true physical size, and 96dpi is the conventional reading of a CSS pixel.
+ */
+export const DEFAULT_DPI = 96;
+
+export const PRINT_DPI: Partial<Record<CanvasName, number>> = {
+  docA4: 150,
+  docLetter: 150,
+};
+
+/** Match on dimensions, the same way SAFE_AREAS is looked up. */
+export function dpiFor(w: number, h: number): number {
+  for (const [name, dpi] of Object.entries(PRINT_DPI)) {
+    const canvas = (CANVAS as Record<string, Size>)[name];
+    if (canvas && canvas.w === w && canvas.h === h) return dpi;
+  }
+  return DEFAULT_DPI;
+}
 
 /** The largest canvas a browser will rasterise in one go. */
 export const MAX_PIXELS = 16_777_216;

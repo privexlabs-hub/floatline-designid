@@ -18,6 +18,12 @@ export type Doc = {
   grain: boolean;
   vertical: VerticalId;
   currency: CurrencyId;
+  /**
+   * Overrides the alt text a batch export would otherwise generate from the
+   * field values. Platforms drop alt text on upload, so the sidecar CSV is
+   * often the only copy that survives — worth being able to write by hand.
+   */
+  alt?: string;
 };
 
 export type Docs = Record<string, Doc>;
@@ -39,6 +45,7 @@ type Action =
   | { t: 'grain'; id: string; v: boolean }
   | { t: 'vertical'; id: string; v: VerticalId }
   | { t: 'currency'; id: string; v: CurrencyId }
+  | { t: 'alt'; id: string; v: string }
   | { t: 'reset'; id: string }
   | { t: 'undo' }
   | { t: 'redo' }
@@ -81,6 +88,8 @@ function reducer(state: State, a: Action): State {
       return editDoc(state, a.id, (d) => ({ ...d, vertical: a.v }));
     case 'currency':
       return editDoc(state, a.id, (d) => ({ ...d, currency: a.v }));
+    case 'alt':
+      return editDoc(state, a.id, (d) => ({ ...d, alt: a.v }));
     case 'reset': {
       const p = byId(a.id);
       if (!p) return state;
@@ -145,6 +154,7 @@ function revive(raw: unknown): Docs {
       grain: d.grain ?? false,
       vertical: d.vertical ?? p.vertical ?? DEFAULT_VERTICAL,
       currency: d.currency ?? p.currency ?? 'NGN',
+      ...(d.alt ? { alt: d.alt } : {}),
     };
   }
   return out;

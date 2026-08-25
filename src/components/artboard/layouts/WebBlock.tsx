@@ -1,5 +1,5 @@
 import { Artboard } from '../Artboard';
-import { unit, Wordmark, Eyebrow, Headline, Lede, Chip, ReceiptRule, RowList, Stat, Quote, Panel, FloatBar } from '../primitives';
+import { unit, Wordmark, Eyebrow, Headline, Lede, Chip, ReceiptRule, RowList, Stat, Quote, Panel, FloatBar, CustomerLogo } from '../primitives';
 import { str, arr, type LayoutBaseProps } from './types';
 
 /**
@@ -30,7 +30,10 @@ export function WebBlock(p: LayoutBaseProps) {
           {shape === 'testimonial' ? (
             <>
               <Quote u={u} size={54}>“{str(p.quote)}”</Quote>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 24 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 22 * u, flexWrap: 'wrap' }}>
+                {p.logo !== undefined ? <CustomerLogo u={u} src={str(p.logo)} height={44} /> : null}
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 24 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+              </div>
             </>
           ) : shape === 'pricing' ? (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 22 * u }}>

@@ -65,16 +65,24 @@ export const SURFACE_BG: Record<Surface, string> = {
 export type ArtPalette = {
   bg: string; fg: string; fg2: string; muted: string;
   accent: string; accentFg: string; signal: string; rule: string;
+  /**
+   * Amber TYPE on a light ground. Split from `signal` because #E89B2C measures
+   * 2.06:1 on warm paper — a WCAG failure even at display size — while the
+   * float bar, chip fills and logo that also use `signal` are graphics, which
+   * the text rules do not govern. So the colour is unchanged where it is a
+   * shape and darkened only where it is a letter.
+   */
+  signalText: string;
 };
 
 export const SURFACE_ART: Record<Surface, ArtPalette> = {
-  paper:    { bg: '#F7F2E8', fg: '#053D22', fg2: '#1A1410', muted: '#6B5F54', accent: '#0B6B3A', accentFg: '#F7F2E8', signal: '#E89B2C', rule: 'rgba(26, 20, 16, 0.18)' },
-  canvas:   { bg: '#FBF8F0', fg: '#053D22', fg2: '#3D332B', muted: '#6B5F54', accent: '#0B6B3A', accentFg: '#FBF8F0', signal: '#B2731A', rule: 'rgba(26, 20, 16, 0.14)' },
-  ink:      { bg: '#1A1410', fg: '#F7F2E8', fg2: '#E4DDD0', muted: '#9C8F82', accent: '#29B26A', accentFg: '#053D22', signal: '#E89B2C', rule: 'rgba(247, 242, 232, 0.22)' },
-  green:    { bg: '#053D22', fg: '#F7F2E8', fg2: '#E8F5EE', muted: '#A9C6B5', accent: '#E89B2C', accentFg: '#053D22', signal: '#E89B2C', rule: 'rgba(247, 242, 232, 0.24)' },
-  amber:    { bg: '#FBF1DC', fg: '#1A1410', fg2: '#3D332B', muted: '#8A6A34', accent: '#B2731A', accentFg: '#FBF1DC', signal: '#0B6B3A', rule: 'rgba(178, 115, 26, 0.30)' },
-  mono:     { bg: '#FFFFFF', fg: '#1A1410', fg2: '#1A1410', muted: '#6B5F54', accent: '#1A1410', accentFg: '#FFFFFF', signal: '#1A1410', rule: 'rgba(26, 20, 16, 0.28)' },
-  inverted: { bg: '#0B6B3A', fg: '#F7F2E8', fg2: '#FFFFFF', muted: '#BFDCCB', accent: '#F7F2E8', accentFg: '#0B6B3A', signal: '#FCE6BE', rule: 'rgba(247, 242, 232, 0.30)' },
+  paper:    { bg: '#F7F2E8', fg: '#053D22', fg2: '#1A1410', muted: '#6B5F54', accent: '#0B6B3A', accentFg: '#F7F2E8', signal: '#E89B2C', rule: 'rgba(26, 20, 16, 0.18)', signalText: '#8A5A12' },
+  canvas:   { bg: '#FBF8F0', fg: '#053D22', fg2: '#3D332B', muted: '#6B5F54', accent: '#0B6B3A', accentFg: '#FBF8F0', signal: '#B2731A', rule: 'rgba(26, 20, 16, 0.14)', signalText: '#8A5A12' },
+  ink:      { bg: '#1A1410', fg: '#F7F2E8', fg2: '#E4DDD0', muted: '#9C8F82', accent: '#29B26A', accentFg: '#053D22', signal: '#E89B2C', rule: 'rgba(247, 242, 232, 0.22)', signalText: '#E89B2C' },
+  green:    { bg: '#053D22', fg: '#F7F2E8', fg2: '#E8F5EE', muted: '#A9C6B5', accent: '#E89B2C', accentFg: '#053D22', signal: '#E89B2C', rule: 'rgba(247, 242, 232, 0.24)', signalText: '#E89B2C' },
+  amber:    { bg: '#FBF1DC', fg: '#1A1410', fg2: '#3D332B', muted: '#846531', accent: '#B2731A', accentFg: '#FBF1DC', signal: '#0B6B3A', rule: 'rgba(178, 115, 26, 0.30)', signalText: '#0B6B3A' },
+  mono:     { bg: '#FFFFFF', fg: '#1A1410', fg2: '#1A1410', muted: '#6B5F54', accent: '#1A1410', accentFg: '#FFFFFF', signal: '#1A1410', rule: 'rgba(26, 20, 16, 0.28)', signalText: '#1A1410' },
+  inverted: { bg: '#0B6B3A', fg: '#F7F2E8', fg2: '#FFFFFF', muted: '#BFDCCB', accent: '#F7F2E8', accentFg: '#0B6B3A', signal: '#FCE6BE', rule: 'rgba(247, 242, 232, 0.30)', signalText: '#FCE6BE' },
 };
 
 export const MARKS = {

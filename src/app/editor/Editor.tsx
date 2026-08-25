@@ -6,6 +6,7 @@ import { Stage } from '@/components/editor/Stage';
 import { TemplatePicker } from '@/components/editor/TemplatePicker';
 import { FieldPanel } from '@/components/editor/FieldPanel';
 import { ExportPanel } from '@/components/editor/ExportPanel';
+import { VoicePanel } from '@/components/editor/VoicePanel';
 import { PRESETS } from '@/content/templates/registry';
 import Link from 'next/link';
 
@@ -69,7 +70,18 @@ export default function Editor() {
           onGrain={(v) => dispatch({ t: 'grain', id: preset.id, v })}
           onVertical={(v) => dispatch({ t: 'vertical', id: preset.id, v })}
           onCurrency={(v) => dispatch({ t: 'currency', id: preset.id, v })}
+          onAlt={(v) => dispatch({ t: 'alt', id: preset.id, v })}
           onReset={() => dispatch({ t: 'reset', id: preset.id })}
+        />
+        <hr className="receipt" />
+        <VoicePanel
+          preset={preset}
+          doc={doc}
+          onFocusField={(k) => {
+            const el = document.getElementById(`f-${preset.id}-${k}`);
+            el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            (el as HTMLInputElement | null)?.focus();
+          }}
         />
         <hr className="receipt" />
         <ExportPanel

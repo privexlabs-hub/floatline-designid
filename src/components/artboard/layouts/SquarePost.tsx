@@ -1,5 +1,5 @@
 import { Artboard } from '../Artboard';
-import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Stat, Quote, RowList, ReceiptRule, CtaFooter, Chip, FloatBar, StatusDot, ReadFraction, Money } from '../primitives';
+import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Stat, Quote, RowList, ReceiptRule, CtaFooter, Chip, FloatBar, StatusDot, ReadFraction, Money, CustomerLogo } from '../primitives';
 import { str, arr, type LayoutBaseProps } from './types';
 
 /**
@@ -46,8 +46,11 @@ export function SquarePost(p: LayoutBaseProps) {
           <>
             <Quote u={u} size={(p.quoteSize as number) ?? 58}>“{str(p.quote) || title}”</Quote>
             <ReceiptRule u={u} opacity={0.7} />
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 24 * u, color: 'var(--art-muted)' }}>
-              {str(p.attribution)}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 22 * u, flexWrap: 'wrap' }}>
+              {p.logo !== undefined ? <CustomerLogo u={u} src={str(p.logo)} height={44} /> : null}
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 24 * u, color: 'var(--art-muted)' }}>
+                {str(p.attribution)}
+              </div>
             </div>
           </>
         ) : shape === 'list' ? (

@@ -110,7 +110,44 @@ export default function Spike() {
         return el.clientWidth - parseFloat(cs.paddingLeft || '0') - parseFloat(cs.paddingRight || '0');
       };
 
+      // Content taller than the page. Distinct from the shrink-to-fit check
+      // below: this one is visible on screen too, and is how a footer ends up
+      // sitting on top of the last line of a long page.
+      const overflow: string[] = [];
+      const inner = art.firstElementChild as HTMLElement | null;
+      if (inner && inner.scrollHeight > inner.clientHeight + 2) {
+        overflow.push(
+          `content is ${inner.scrollHeight - inner.clientHeight}px taller than the artboard — it will be clipped or collide`
+        );
+      }
+
       const fragile: string[] = [];
+
+      /**
+       * Does this text sit one hair away from needing another line?
+       *
+       * The export re-lays every pinned box at very slightly different metrics.
+       * A block whose last line is nearly full therefore gains a line there and
+       * not here — and because the height was pinned for the old line count,
+       * the extra line lands on top of whatever follows.
+       *
+       * Rather than guess which metric moved, this measures the risk directly:
+       * squeeze the element by 1.5% and see whether the line count goes up. If
+       * it does, the copy is one rounding error from breaking.
+       */
+      const reWrapsWhenSqueezed = (el: HTMLElement): boolean => {
+        const cs = getComputedStyle(el);
+        const lh = parseFloat(cs.lineHeight);
+        if (!lh || el.clientWidth < 40) return false;
+        const before = Math.round(el.getBoundingClientRect().height / lh);
+        if (before < 1) return false;
+        const original = el.style.width;
+        el.style.width = `${el.clientWidth * 0.985}px`;
+        const after = Math.round(el.getBoundingClientRect().height / lh);
+        el.style.width = original;
+        return after > before;
+      };
+
       for (const el of Array.from(art.querySelectorAll<HTMLElement>('h1, h2, h3, p, blockquote'))) {
         const cs = getComputedStyle(el);
         if (cs.whiteSpace === 'nowrap' || cs.display.startsWith('inline') || cs.position === 'absolute') continue;
@@ -142,9 +179,15 @@ export default function Spike() {
           }
           node = parent;
         }
+
+        if (fragile.length < 3 && reWrapsWhenSqueezed(el)) {
+          fragile.push(
+            `${el.tagName.toLowerCase()} "${(el.textContent ?? '').trim().slice(0, 30)}" gains a line when squeezed 1.5% — the export will re-wrap it into a box pinned for fewer lines`
+          );
+        }
         if (fragile.length >= 3) break;
       }
-      return { fragile };
+      return { fragile: [...overflow, ...fragile] };
     };
 
     w.__spikeReady = true;

@@ -1,7 +1,7 @@
 # Working in this repository
 
-Read `README.md` first — particularly **The export contract** and **Two bugs
-worth knowing about**. Both describe non-obvious constraints that are easy to
+Read `README.md` first — particularly **The export contract** and **Bugs worth knowing
+about**. Both describe non-obvious constraints that are easy to
 undo by accident.
 
 ## Non-negotiable
@@ -16,8 +16,17 @@ undo by accident.
   what makes seven surfaces work from one component.
 - **Fonts stay self-hosted.** A Google Fonts link makes every export ship in
   fallback type, silently.
-- **One export path.** Everything goes through `exportOne()`. A second one will
-  drift.
+- **One export path.** Everything goes through `exportOne()`, and the multi-page
+  PDF lives *inside* `export-image.ts` and shares its rasteriser. A second one
+  will drift.
+- **No `var()` in artboard text that must survive export** — and no amber TYPE
+  on a light ground. Use `--art-signal-text`, not `--art-signal`, for letters;
+  `--art-signal` stays the graphic colour.
+- **Pages carry stable ids.** Never key a sequence page, a ref map or a React
+  key by array index — reorder and delete shift every index after them.
+- **State: two stores, one `Doc`.** `use-editor-state.ts` keys one doc per
+  preset, for editing a template. `sequences.ts` holds ordered runs. They share
+  the `Doc` type and nothing else; do not merge them.
 
 ## Before you finish
 
@@ -26,6 +35,11 @@ npm run typecheck && npm run lint && npm run build
 npm start &
 npm run verify && npm run audit
 ```
+
+`verify` runs six suites. If `verify-voice` fails, fix the copy, not the rule —
+the rules are the playbook. If `verify-layout` reports a template "gains a line
+when squeezed", shorten the copy or reduce the type size: it is one rounding
+error from breaking in the export.
 
 If you change a token, change it in `src/styles/tokens.css` first. The typed
 mirror in `src/lib/tokens.ts` is small on purpose; `verify-app` fails if the two

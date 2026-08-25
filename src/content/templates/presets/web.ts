@@ -1,6 +1,6 @@
 import { CANVAS, type Size } from '@/lib/artboard-sizes';
 import type { Preset, Field } from '../types';
-import { text, area, lines, title, body, cta, url, badge, eyebrow } from '../fields';
+import { text, area, lines, title, body, cta, url, badge, eyebrow, image } from '../fields';
 import type { Surface } from '@/lib/tokens';
 
 const G = 'Web · Multi-format';
@@ -40,6 +40,7 @@ export const WEB_PRESETS: Preset[] = [
     eyebrow('Customer'),
     area('quote', 'Quote', 'I used to open thirty-two chats before breakfast. Now I read one digest and send one message.', 200),
     text('attribution', 'Attribution', 'Aisha O. · 32 sub-agents · Surulere'),
+    image('logo', 'Customer logo'),
     url(),
   ], 'green'),
 

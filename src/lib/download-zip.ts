@@ -31,6 +31,8 @@ export type BatchOptions = {
  * words travel with the picture.
  */
 function altTextFor(preset: Preset, doc: Doc): string {
+  // A hand-written override always wins — it is the only version anyone read.
+  if (doc.alt?.trim()) return doc.alt.trim().slice(0, 900);
   const parts = preset.fields
     .map((f) => doc.fields[f.k] ?? f.def)
     .flatMap((v) => (Array.isArray(v) ? v.map(String) : [str(v)]))

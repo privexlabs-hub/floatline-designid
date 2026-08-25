@@ -18,7 +18,7 @@ export const EMAIL_PRESETS: Preset[] = [
 
   em('announce', 'Email · Product announcement', CANVAS.emailBody, 'announce', [
     eyebrow('Announcement'), title('runs now retry on their own'),
-    body('A failed step no longer stops the workflow. Floatline retries with backoff and tells you only when it gives up.'),
+    body('A failed step no longer stops the workflow. Floatline retries, and tells you only when it gives up.'),
     lines('items', 'Points', ['Automatic retry with backoff', 'One notification, not twelve', 'Full run history retained']),
     cta('Read the changelog'), url(),
   ]),
@@ -61,7 +61,7 @@ export const EMAIL_PRESETS: Preset[] = [
 
   em('cta-banner', 'Email · CTA banner', CANVAS.emailBanner, 'ctaBanner', [
     title('put your network on one line'),
-    body('One channel, one list, one broadcast.'),
+    body('One channel, one list, one broadcast.', 90),
     cta('Start free'), url(),
   ], 'inverted'),
 

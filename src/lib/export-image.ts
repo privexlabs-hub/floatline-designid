@@ -9,7 +9,7 @@
  * file from another. One primitive, one namer, no drift.
  */
 
-import { MAX_PIXELS, megapixels, type Size } from './artboard-sizes';
+import { MAX_PIXELS, dpiFor, megapixels, type Size } from './artboard-sizes';
 import { SURFACE_BG, type Surface } from './tokens';
 
 export const SCALES = [1, 2, 3] as const;
@@ -160,8 +160,101 @@ export async function getSharedFontCSS(node: HTMLElement): Promise<string> {
 /* The primitive                                                       */
 /* ------------------------------------------------------------------ */
 
-export async function exportOne(target: ExportTarget, opts: ExportOptions = {}): Promise<Blob> {
+/**
+ * Rasterise one artboard to a canvas at the fitted scale.
+ *
+ * Split out of exportOne so the multi-page PDF below uses the SAME pixels as a
+ * single-page export — the alternative is two rasterisers that agree until the
+ * day they do not.
+ */
+async function rasteriseToCanvas(
+  target: ExportTarget,
+  opts: ExportOptions
+): Promise<{ canvas: HTMLCanvasElement; scale: number }> {
   const { node, w, h, surface = 'paper' } = target;
+  const { scale: desired = 1, fontEmbedCSS, onClamp } = opts;
+
+  const fit = fitScale(w, h, desired);
+  if (fit.clamped) onClamp?.({ requested: desired, used: fit.scale });
+
+  const htmlToImage = await import('html-to-image');
+  node.setAttribute('data-capturing', 'true');
+  try {
+    const canvas = await htmlToImage.toCanvas(node, {
+      width: w,
+      height: h,
+      pixelRatio: fit.scale,
+      cacheBust: true,
+      backgroundColor: SURFACE_BG[surface],
+      ...(fontEmbedCSS ? { fontEmbedCSS } : {}),
+    });
+    return { canvas, scale: fit.scale };
+  } finally {
+    node.removeAttribute('data-capturing');
+  }
+}
+
+/**
+ * One PDF, one page per artboard, each page sized to its own artboard.
+ *
+ * Lives here rather than in a module of its own because of the rule at the top
+ * of this file: a second export path drifts from the first. It reuses
+ * `rasteriseToCanvas`, so a page in a deck PDF is pixel-identical to the same
+ * artboard exported alone.
+ *
+ * Page boxes are in POINTS, computed from each canvas's design resolution, so a
+ * document page comes out as real A4 rather than a 20-inch square. jsPDF's `px`
+ * unit makes one PDF unit a CSS pixel at 96dpi, which is right for a screen
+ * artefact and wrong for anything anyone prints — an A4 page drawn at 150dpi
+ * opened at 23 x 33 inches.
+ *
+ * The image still fills the page exactly; only the page's physical size
+ * changes, so a 150dpi page carries 150dpi of detail.
+ *
+ * The first target constructs the document and the rest call addPage — jsPDF
+ * always creates page one, so building it up front would leave a blank leader.
+ */
+export async function exportPages(
+  targets: ExportTarget[],
+  opts: ExportOptions & { onProgress?: (done: number, total: number) => void } = {}
+): Promise<Blob> {
+  if (targets.length === 0) throw new ExportError('There are no pages to export.');
+
+  const { quality = 0.94, onProgress } = opts;
+  const { jsPDF } = await import('jspdf');
+  let pdf: import('jspdf').jsPDF | null = null;
+
+  for (const [i, target] of targets.entries()) {
+    onProgress?.(i, targets.length);
+    if (!target.node.isConnected) {
+      throw new ExportError(`Page ${i + 1} is not in the document, so it cannot be measured.`);
+    }
+    const { canvas } = await rasteriseToCanvas(target, opts);
+    const orientation = target.w >= target.h ? 'landscape' : 'portrait';
+    const dpi = dpiFor(target.w, target.h);
+    const ptW = (target.w * 72) / dpi;
+    const ptH = (target.h * 72) / dpi;
+
+    if (!pdf) {
+      pdf = new jsPDF({ unit: 'pt', format: [ptW, ptH], orientation, compress: true });
+    } else {
+      pdf.addPage([ptW, ptH], orientation);
+    }
+    pdf.addImage(canvas.toDataURL('image/jpeg', quality), 'JPEG', 0, 0, ptW, ptH, undefined, 'FAST');
+
+    // Free the backing store before the next page allocates its own. A
+    // twenty-page A4 deck at 2x is otherwise several gigabytes of live canvas.
+    canvas.width = 1;
+    canvas.height = 1;
+  }
+
+  onProgress?.(targets.length, targets.length);
+  return pdf!.output('blob');
+}
+
+export async function exportOne(target: ExportTarget, opts: ExportOptions = {}): Promise<Blob> {
+  // `surface` is read by rasteriseToCanvas from the target, not here.
+  const { node, w, h } = target;
   const { scale: desired = 1, format = 'png', quality = 0.94, fontEmbedCSS, onClamp } = opts;
 
   if (!node.isConnected) {
@@ -179,7 +272,6 @@ export async function exportOne(target: ExportTarget, opts: ExportOptions = {}):
   }
 
   const htmlToImage = await import('html-to-image');
-  const background = SURFACE_BG[surface];
 
   // pixelRatio is ALWAYS passed. Left to default it picks up devicePixelRatio,
   // and the same click produces a 1080px file on one machine and 2160px on a
@@ -206,17 +298,22 @@ export async function exportOne(target: ExportTarget, opts: ExportOptions = {}):
       // JPEG/WebP/PDF all need a flattened, opaque canvas. backgroundColor is
       // mandatory for JPEG: it has no alpha, so a transparent artboard would
       // otherwise rasterise onto black.
-      const canvas = await htmlToImage.toCanvas(node, { ...common, backgroundColor: background });
+      const { canvas } = await rasteriseToCanvas(target, { ...opts, scale: fit.scale as Scale });
 
       if (format === 'pdf') {
+        // Points, from the canvas's design resolution — see exportPages. A
+        // one-page PDF and a page of a deck PDF must be the same object.
         const { jsPDF } = await import('jspdf');
+        const dpi = dpiFor(w, h);
+        const ptW = (w * 72) / dpi;
+        const ptH = (h * 72) / dpi;
         const pdf = new jsPDF({
-          unit: 'px',
-          format: [w, h],
+          unit: 'pt',
+          format: [ptW, ptH],
           orientation: w >= h ? 'landscape' : 'portrait',
           compress: true,
         });
-        pdf.addImage(canvas.toDataURL('image/jpeg', quality), 'JPEG', 0, 0, w, h, undefined, 'FAST');
+        pdf.addImage(canvas.toDataURL('image/jpeg', quality), 'JPEG', 0, 0, ptW, ptH, undefined, 'FAST');
         blob = pdf.output('blob');
       } else {
         const mime = FORMAT_META[format].mime;

@@ -7,8 +7,9 @@ import { TOC } from '@/content/playbook';
 const DOORS = [
   { href: '/playbook/', n: '01', title: 'Brand playbook', body: `${TOC.filter((t) => t.kind === 'item').length} sections: positioning, channel strategy, voice, visual identity, formats, cadence and governance.` },
   { href: '/editor/', n: '02', title: 'Studio', body: `${PRESETS.length} templates across ${GROUPED.filter((g) => g.presets.length).length} groups. Edit, switch surface and vertical, export PNG / JPEG / WebP / SVG / PDF — one at a time or the whole kit as a ZIP.` },
-  { href: '/design-system/', n: '03', title: 'Design system', body: 'Colour, type, spacing, radii, elevation, motifs and iconography — read back out of the live stylesheet. Every brand asset, downloadable.' },
-  { href: '/ui-kits/', n: '04', title: 'UI kits', body: 'The brand on product surfaces: a multi-channel conversation and the operator console, as live responsive React.' },
+  { href: '/decks/', n: '03', title: 'Decks & documents', body: 'Ordered runs of artboards — carousels, reports, whitepapers, proposals and pitch decks. Reorder, edit and export as one PDF or as numbered files.' },
+  { href: '/design-system/', n: '04', title: 'Design system', body: 'Colour, type, spacing, radii, elevation, motifs and iconography — read back out of the live stylesheet. Every brand asset, downloadable.' },
+  { href: '/ui-kits/', n: '05', title: 'UI kits', body: 'The brand on product surfaces: a multi-channel conversation and the operator console, as live responsive React.' },
 ];
 
 export default function Home() {
@@ -83,7 +84,7 @@ export default function Home() {
 
       <section className="shell" style={{ paddingBlock: 'var(--sp-6) var(--sp-11)' }}>
         <hr className="receipt" />
-        <span className="fl-micro">Four doors</span>
+        <span className="fl-micro">Five doors</span>
         <div className="auto-grid" style={{ marginTop: 'var(--sp-5)' }}>
           {DOORS.map((d) => (
             <Link key={d.href} href={d.href} className="card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>

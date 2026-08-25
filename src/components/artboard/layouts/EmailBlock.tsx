@@ -34,7 +34,7 @@ export function EmailBlock(p: LayoutBaseProps) {
               </>
             ) : shape === 'story' ? (
               <>
-                <Quote u={u} size={42}>“{str(p.quote)}”</Quote>
+                <Quote u={u} size={36}>“{str(p.quote)}”</Quote>
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 22 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
               </>
             ) : shape === 'promo' ? (
@@ -44,7 +44,7 @@ export function EmailBlock(p: LayoutBaseProps) {
               </>
             ) : (
               <>
-                <Headline u={u} size={shape === 'ctaBanner' ? 56 : 50}>{title}</Headline>
+                <Headline u={u} size={shape === 'ctaBanner' ? 40 : 50}>{title}</Headline>
                 {str(p.body) ? <Lede u={u} size={27}>{str(p.body)}</Lede> : null}
                 {arr(p.items).length ? <RowList u={u} items={arr(p.items)} numbered={shape === 'onboarding'} size={25} /> : null}
               </>

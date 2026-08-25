@@ -12,6 +12,49 @@ import { PLATFORM_LIMITS } from '@/lib/platforms';
  * template cannot grow a text box nobody can fill in and the export always has
  * a value for everything it renders.
  */
+/**
+ * Read an uploaded file to a data URL, downscaled so it can live in
+ * localStorage without evicting everything else.
+ *
+ * 1600px on the long edge is comfortably above what any artboard needs — the
+ * largest logo box in the catalog is a few hundred pixels at 3x — and turns a
+ * multi-megabyte photo into tens of kilobytes.
+ */
+const MAX_EDGE = 1600;
+
+async function downscaleToDataUrl(file: File): Promise<string> {
+  const original = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error('That file could not be read.'));
+    reader.readAsDataURL(file);
+  });
+
+  // SVG has no intrinsic raster size to shrink, and is already small.
+  if (file.type === 'image/svg+xml') return original;
+
+  const img = new Image();
+  img.src = original;
+  try {
+    await img.decode();
+  } catch {
+    return original; // undecodable here will fail visibly on the artboard
+  }
+
+  const scale = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
+  if (scale === 1 && original.length < 400_000) return original;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return original;
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+  // PNG keeps transparency, which a logo usually needs.
+  return canvas.toDataURL('image/png');
+}
+
 export function FieldPanel({
   preset,
   doc,
@@ -20,6 +63,7 @@ export function FieldPanel({
   onGrain,
   onVertical,
   onCurrency,
+  onAlt,
   onReset,
 }: {
   preset: Preset;
@@ -29,6 +73,7 @@ export function FieldPanel({
   onGrain: (v: boolean) => void;
   onVertical: (v: VerticalId) => void;
   onCurrency: (v: CurrencyId) => void;
+  onAlt: (v: string) => void;
   onReset: () => void;
 }) {
   const limit = preset.platform ? PLATFORM_LIMITS[preset.platform] : undefined;
@@ -78,13 +123,24 @@ export function FieldPanel({
           <input id={id} type="file" accept="image/*" onChange={(e) => {
             const file = e.target.files?.[0];
             if (!file) return;
-            // Read to a data URL and keep it in the doc. Nothing is uploaded —
-            // and a data URL is same-origin, so it survives the export canvas.
-            const reader = new FileReader();
-            reader.onload = () => onField(f.k, String(reader.result));
-            reader.readAsDataURL(file);
+            // Downscaled before it reaches the doc. A data URL goes straight
+            // into localStorage, and a 4 MB photo becomes ~5.5 MB of base64 —
+            // enough to blow the quota and lose every other saved design.
+            void downscaleToDataUrl(file).then((url) => onField(f.k, url));
+            e.target.value = '';
           }} />
-          <span className="note">Stays in your browser. Never uploaded.</span>
+          {String(v ?? '').startsWith('data:') ? (
+            <div className="row" style={{ gap: 'var(--sp-2)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={String(v)} alt="" style={{ height: 40, width: 'auto', maxWidth: 120, objectFit: 'contain', borderRadius: 'var(--r-sm)', border: '1px solid var(--border)' }} />
+              <button type="button" className="btn" style={{ minHeight: 36, padding: '0 var(--sp-3)' }} onClick={() => onField(f.k, '')}>Remove</button>
+            </div>
+          ) : null}
+          <span className="note">
+            Customer logos and product screenshots. Not stock photography and not
+            generated faces — avatars stay initials on a colour. Stays in your
+            browser; never uploaded.
+          </span>
         </div>
       );
     }
@@ -150,6 +206,21 @@ export function FieldPanel({
         <select id="currency" value={doc.currency} onChange={(e) => onCurrency(e.target.value as CurrencyId)}>
           {CURRENCIES.map((c) => <option key={c.id} value={c.id}>{c.symbol} · {c.label}</option>)}
         </select>
+      </div>
+
+      <div className="field">
+        <label htmlFor="alt">Alt text</label>
+        <textarea
+          id="alt"
+          value={doc.alt ?? ''}
+          rows={2}
+          placeholder="Generated from the copy above if left blank"
+          onChange={(e) => onAlt(e.target.value)}
+        />
+        <span className="note">
+          Travels with the image in the batch export&rsquo;s alt-text.csv. Platforms
+          drop alt text on upload, so this is often the only copy that survives.
+        </span>
       </div>
 
       <hr className="receipt" />

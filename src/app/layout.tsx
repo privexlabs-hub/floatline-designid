@@ -10,6 +10,7 @@ import '@/styles/app.css';
 import '@/styles/editor.css';
 import '@/styles/playbook.css';
 import '@/styles/ui-kits.css';
+import '@/styles/decks.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://floatline.app'),

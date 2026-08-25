@@ -14,7 +14,7 @@ import path from 'node:path';
 import { launch, goto, evaluate, ORIGIN } from './lib-cdp.mjs';
 
 const OUT = path.resolve(import.meta.dirname, '../verify-out/responsive');
-const ROUTES = ['/', '/playbook/', '/editor/', '/design-system/', '/ui-kits/'];
+const ROUTES = ['/', '/playbook/', '/editor/', '/decks/', '/design-system/', '/ui-kits/'];
 const WIDTHS = [320, 360, 414, 768, 1024, 1440, 1920];
 const TAP_MIN = 44;
 
@@ -27,6 +27,17 @@ async function main() {
 
   const { page, close } = await launch({ port: 9459 });
   try {
+    // Confirm we are auditing THIS project. A different dev server holding the
+    // port once produced a full run of failures for somebody else's markup,
+    // which is a slow and confusing way to learn the port was taken.
+    await goto(page, `${ORIGIN}/`);
+    const title = await evaluate(page, 'document.title');
+    if (!/floatline/i.test(title)) {
+      console.error(`[audit-responsive] ${ORIGIN} is serving "${title}", not Floatline.`);
+      console.error('[audit-responsive] run `npm run build && npm start` first.');
+      process.exit(1);
+    }
+
     for (const route of ROUTES) {
       for (const width of WIDTHS) {
         await page.send('Emulation.setDeviceMetricsOverride', {

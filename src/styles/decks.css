@@ -1,0 +1,93 @@
+/* Decks and documents. Same three-pane shape and collapse order as the studio,
+   with the template rail replaced by an ordered page list. */
+
+.dk {
+  display: grid;
+  grid-template-columns: 292px minmax(0, 1fr) 340px;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'top top top' 'rail stage panel';
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.dk-top {
+  grid-area: top;
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elev);
+  flex-wrap: wrap;
+}
+.dk-name {
+  min-width: 0; flex: 1 1 200px; min-height: var(--tap-min);
+  padding: 0 var(--sp-3);
+  border: 1px solid transparent; border-radius: var(--r-md);
+  background: transparent; color: var(--fg);
+  font: inherit; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h4);
+}
+.dk-name:hover, .dk-name:focus { border-color: var(--border-strong); background: var(--fl-white); }
+
+.dk-rail { grid-area: rail; border-right: 1px solid var(--border); overflow-y: auto; background: var(--bg-elev); }
+.dk-stage { grid-area: stage; overflow: auto; display: grid; place-items: center; padding: var(--sp-6); background: var(--fl-paper-2); }
+.dk-panel { grid-area: panel; border-left: 1px solid var(--border); overflow-y: auto; background: var(--bg-elev); padding: var(--sp-4); }
+
+.strip { list-style: none; margin: 0; padding: var(--sp-3); display: grid; gap: var(--sp-2); }
+.strip-item { display: grid; gap: 4px; }
+.strip-chip {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--sp-2);
+  align-items: center; width: 100%; min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3); position: relative;
+  border: 2px solid var(--border); border-radius: var(--r-md);
+  font: inherit; font-size: var(--fs-small); text-align: left; cursor: pointer;
+  overflow: hidden;
+}
+.strip-chip[aria-current='true'] { box-shadow: var(--sh-focus); }
+.strip-n { font-family: var(--font-mono); font-size: var(--fs-micro); opacity: 0.75; }
+.strip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.strip-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; opacity: 0.9; }
+
+.strip-actions { display: flex; gap: 2px; }
+.strip-act {
+  flex: 1; min-height: 32px; border: 1px solid var(--border);
+  border-radius: var(--r-sm); background: var(--bg-elev); color: var(--fg-subtle);
+  font: inherit; font-size: 13px; line-height: 1; cursor: pointer;
+}
+.strip-act:hover:not(:disabled) { background: var(--fl-green-100); color: var(--fl-green-900); }
+.strip-act:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.starters { display: grid; gap: var(--sp-3); padding: var(--sp-4); }
+.starter {
+  display: block; width: 100%; text-align: left;
+  padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--bg-elev); color: inherit; font: inherit; cursor: pointer;
+}
+.starter:hover { border-color: var(--accent); background: var(--fl-green-100); }
+.starter b { display: block; font-size: var(--fs-h4); font-family: var(--font-display); letter-spacing: -0.01em; }
+.starter span { display: block; margin-top: 6px; font-size: var(--fs-small); color: var(--fg-muted); line-height: 1.45; }
+.starter em { display: block; margin-top: 8px; font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--fg-faint); font-style: normal; }
+
+.dk-empty { max-width: 720px; margin: 0 auto; padding: var(--sp-9) var(--sp-5); }
+
+@media (max-width: 1100px) {
+  .dk { grid-template-columns: 250px minmax(0, 1fr); grid-template-areas: 'top top' 'rail stage'; }
+  .dk-panel {
+    grid-area: unset; position: fixed; inset: auto 0 0 0; z-index: var(--z-drawer);
+    max-height: 46dvh; border-left: 0; border-top: 1px solid var(--border);
+    box-shadow: var(--sh-3); border-radius: var(--r-xl) var(--r-xl) 0 0; padding-top: var(--sp-5);
+  }
+  .dk-panel::before {
+    content: ''; position: absolute; top: var(--sp-2); left: 50%;
+    transform: translateX(-50%); width: 40px; height: 4px;
+    border-radius: 999px; background: var(--fl-ink-5);
+  }
+  .dk-stage { padding-bottom: calc(46dvh + var(--sp-4)); }
+}
+
+@media (max-width: 860px) {
+  /* The page list becomes a horizontal scroller above the stage — a vertical
+     rail would eat the screen the artboard needs. */
+  .dk { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'top' 'rail' 'stage'; }
+  .dk-rail { border-right: 0; border-bottom: 1px solid var(--border); overflow-x: auto; overflow-y: hidden; }
+  .strip { grid-auto-flow: column; grid-auto-columns: 168px; }
+  .strip-chip { grid-template-columns: auto 1fr; }
+}

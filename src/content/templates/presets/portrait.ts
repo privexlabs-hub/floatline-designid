@@ -1,6 +1,6 @@
 import { CANVAS } from '@/lib/artboard-sizes';
 import type { Preset, Field } from '../types';
-import { text, area, lines, eyebrow, title, body, cta, url, badge } from '../fields';
+import { text, area, lines, eyebrow, title, body, cta, url, badge, image } from '../fields';
 import type { Surface } from '@/lib/tokens';
 
 const G = 'Portrait · 1080×1350';
@@ -13,7 +13,7 @@ const po = (id: string, name: string, shape: string, fields: Field[], surface: S
 export const PORTRAIT_PRESETS: Preset[] = [
   po('announce', 'Feed post · Announcement', 'announce', [
     badge('New'), eyebrow('Announcement'),
-    title('runs now retry on their own'),
+    title('runs retry themselves'),
     body('A failed step no longer stops the workflow. Floatline retries with backoff and tells you only when it gives up.'),
     cta('Read the changelog'), url(),
   ], 'green'),
@@ -51,6 +51,7 @@ export const PORTRAIT_PRESETS: Preset[] = [
     eyebrow('Customer'),
     area('quote', 'Quote', 'We found out about failed drops the next morning. Now we find out in eleven minutes.', 180),
     text('attribution', 'Attribution', 'Ops manager · 120 riders · Lagos'),
+    image('logo', 'Customer logo'),
     cta('Read the story'), url(),
   ], 'ink'),
 

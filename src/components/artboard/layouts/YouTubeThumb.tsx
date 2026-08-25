@@ -34,7 +34,7 @@ export function YouTubeThumb(p: LayoutBaseProps) {
         ) : shape === 'versus' ? (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 26 * u, alignItems: 'center' }}>
             <Headline u={u} size={72} weight={800}>{str(p.leftLabel)}</Headline>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 44 * u, color: 'var(--art-signal)' }}>vs</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 44 * u, color: 'var(--art-signal-text)' }}>vs</span>
             <Headline u={u} size={72} weight={800}>{str(p.rightLabel)}</Headline>
           </div>
         ) : shape === 'list' ? (

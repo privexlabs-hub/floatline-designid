@@ -131,7 +131,7 @@ export function Eyebrow({ u, children, tone = 'muted' }: U & { children: ReactNo
         letterSpacing: '0.14em',
         textTransform: 'uppercase',
         fontWeight: 500,
-        color: tone === 'signal' ? 'var(--art-signal)' : 'var(--art-muted)',
+        color: tone === 'signal' ? 'var(--art-signal-text)' : 'var(--art-muted)',
       }}
     >
       {children}
@@ -201,7 +201,7 @@ export function Stat({ u, value, label, size = 176 }: U & { value: ReactNode; la
           fontSize: size * u,
           lineHeight: 0.92,
           letterSpacing: '-0.04em',
-          color: 'var(--art-signal)',
+          color: 'var(--art-signal-text)',
           fontFeatureSettings: '"tnum"',
         }}
       >
@@ -336,7 +336,7 @@ export function RowList({ u, items, numbered = false, size = 28 }: U & { items: 
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: size * 0.78 * u,
-              color: 'var(--art-signal)',
+              color: 'var(--art-signal-text)',
               lineHeight: 1.5,
               fontWeight: 500,
             }}
@@ -415,6 +415,181 @@ export function Frame({
         {children}
       </div>
       {footer ? <div style={{ flex: 'none' }}>{footer}</div> : null}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Long-form furniture                                                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A customer's own logo, or a product screenshot.
+ *
+ * Deliberately narrow. Non-negotiable #7 is "no stock photography and no
+ * generated faces" — this exists for the two cases where a real asset is the
+ * honest thing to show, and the empty state says so rather than collapsing to
+ * nothing and leaving a hole in the layout.
+ */
+export function CustomerLogo({
+  u,
+  src,
+  height = 64,
+  label = 'Customer logo',
+}: U & { src?: string; height?: number; label?: string }) {
+  if (src && src.startsWith('data:')) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        style={{ height: height * u, width: 'auto', maxWidth: '100%', objectFit: 'contain', display: 'block' }}
+      />
+    );
+  }
+  return (
+    <div
+      style={{
+        height: height * u,
+        minWidth: height * u * 2.6,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: `0 ${16 * u}px`,
+        border: `${Math.max(1, 1.6 * u)}px dashed var(--art-rule)`,
+        borderRadius: 8 * u,
+        fontFamily: 'var(--font-mono)',
+        fontSize: 16 * u,
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        color: 'var(--art-muted)',
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+/**
+ * Labelled horizontal bars. The brand already has a data motif — the float bar
+ * — so a report's charts are that shape repeated, not a charting library.
+ * Each row is `Label | value | percent`.
+ */
+export function BarList({ u, rows, size = 24 }: U & { rows: string[]; size?: number }) {
+  const parsed = rows
+    .filter(Boolean)
+    .map((r) => {
+      const [label, value, pct] = r.split('|').map((x) => x?.trim() ?? '');
+      return { label, value, pct: Math.max(0, Math.min(100, parseFloat(pct || value || '0') || 0)) };
+    });
+
+  return (
+    <div style={{ display: 'grid', gap: 18 * u, width: '100%' }}>
+      {parsed.map((row, i) => (
+        <div key={i} style={{ display: 'grid', gap: 8 * u }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 * u, fontSize: size * u }}>
+            <span style={{ color: 'var(--art-fg-2)' }}>{row.label}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontFeatureSettings: '"tnum"', color: 'var(--art-fg)', fontWeight: 600 }}>
+              {row.value}
+            </span>
+          </div>
+          <FloatBar u={u} pct={row.pct} height={14} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** A receipt-ruled table. Rows are `cell | cell | cell`; the first row is the head. */
+export function DataTable({ u, rows, size = 22 }: U & { rows: string[]; size?: number }) {
+  const parsed = rows.filter(Boolean).map((r) => r.split('|').map((c) => c.trim()));
+  const [head, ...body] = parsed;
+  if (!head) return null;
+
+  return (
+    <div style={{ width: '100%', display: 'grid', gap: 0 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: `1.6fr repeat(${Math.max(1, head.length - 1)}, 1fr)`,
+          gap: 16 * u,
+          paddingBottom: 10 * u,
+        }}
+      >
+        {head.map((c, i) => (
+          <span
+            key={i}
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: size * 0.78 * u,
+              letterSpacing: '0.09em',
+              textTransform: 'uppercase',
+              color: 'var(--art-muted)',
+              textAlign: i === 0 ? 'left' : 'right',
+            }}
+          >
+            {c}
+          </span>
+        ))}
+      </div>
+      <ReceiptRule u={u} />
+      {body.map((row, r) => (
+        <div key={r}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `1.6fr repeat(${Math.max(1, head.length - 1)}, 1fr)`,
+              gap: 16 * u,
+              padding: `${12 * u}px 0`,
+            }}
+          >
+            {row.map((c, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: size * u,
+                  color: i === 0 ? 'var(--art-fg)' : 'var(--art-fg-2)',
+                  fontWeight: i === 0 ? 600 : 400,
+                  textAlign: i === 0 ? 'left' : 'right',
+                  fontFamily: i === 0 ? 'var(--font-sans)' : 'var(--font-mono)',
+                  fontFeatureSettings: i === 0 ? undefined : '"tnum"',
+                }}
+              >
+                {c}
+              </span>
+            ))}
+          </div>
+          {r < body.length - 1 ? (
+            <hr style={{ border: 0, borderTop: `${Math.max(1, u)}px solid var(--art-rule)`, margin: 0, opacity: 0.6 }} />
+          ) : null}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Running header and page number, in the receipt-rule idiom used everywhere else. */
+export function PageFooter({
+  u,
+  header,
+  page,
+  total,
+  show = true,
+}: U & { header?: string; page?: number; total?: number; show?: boolean }) {
+  if (!show) return null;
+  return (
+    <div style={{ width: '100%', display: 'grid', gap: 14 * u }}>
+      <ReceiptRule u={u} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20 * u, alignItems: 'baseline' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 18 * u, color: 'var(--art-muted)', letterSpacing: '0.06em' }}>
+          {header}
+        </span>
+        {page !== undefined ? (
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 18 * u, color: 'var(--art-muted)', fontFeatureSettings: '"tnum"' }}>
+            {total !== undefined ? `${page} / ${total}` : page}
+          </span>
+        ) : null}
+      </div>
     </div>
   );
 }

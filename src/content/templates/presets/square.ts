@@ -1,6 +1,6 @@
 import { CANVAS } from '@/lib/artboard-sizes';
 import type { Preset, Field } from '../types';
-import { text, area, lines, eyebrow, title, body, cta, url, badge } from '../fields';
+import { text, area, lines, eyebrow, title, body, cta, url, badge, image } from '../fields';
 import type { Surface } from '@/lib/tokens';
 
 const G = 'Square · 1080×1080';
@@ -57,6 +57,7 @@ export const SQUARE_PRESETS: Preset[] = [
     eyebrow('In their words'),
     area('quote', 'Quote', 'I used to open thirty-two chats before breakfast. Now I read one digest and send one message.', 180),
     text('attribution', 'Attribution', 'Aisha O. · 32 sub-agents · Surulere'),
+    image('logo', 'Customer logo'),
     url(),
   ], 'canvas'),
 
@@ -64,6 +65,7 @@ export const SQUARE_PRESETS: Preset[] = [
     eyebrow('Customer'),
     area('quote', 'Quote', 'The morning call used to take forty minutes. Now it takes four, and it is about exceptions.', 180),
     text('attribution', 'Attribution', 'Dispatch lead · 40-technician region'),
+    image('logo', 'Customer logo'),
     cta('Read the story'),
     url(),
   ], 'ink'),
@@ -261,7 +263,7 @@ export const SQUARE_PRESETS: Preset[] = [
     eyebrow('Behind the build'),
     title('why we do not queue on the client'),
     text('leftLabel', 'Left label', 'What we tried'),
-    area('leftBody', 'Left body', 'Batching sends in the browser. Fast to build, and wrong the moment a tab closes mid-broadcast.'),
+    area('leftBody', 'Left body', 'Batching sends in the browser. Fast to build, and wrong the moment a tab closes.'),
     text('rightLabel', 'Right label', 'What we ship'),
     area('rightBody', 'Right body', 'Every broadcast is a durable run. Close the tab, lose your signal — it still finishes.'),
     url(),

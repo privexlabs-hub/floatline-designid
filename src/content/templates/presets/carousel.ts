@@ -34,7 +34,7 @@ const co = (
 export const CAROUSEL_PRESETS: Preset[] = [
   co(1, 'intro', 'Slide 0 · Intro / title', 'hook', [
     eyebrow('Floatline'),
-    title('how a network stops running on your thumbs'),
+    title('a network that runs itself'),
     body('Twelve slides. Six minutes. One worked example.'),
   ], 'green'),
 
@@ -93,7 +93,7 @@ export const CAROUSEL_PRESETS: Preset[] = [
 
   co(9, 'examples', 'Slide 7 · Examples', 'examples', [
     eyebrow('07 · Examples'),
-    title('five networks, the same four jobs'),
+    title('five networks, four jobs'),
     lines('items', 'Examples', [
       'Agent networks — float and terminal risk',
       'Field operations — job status',

@@ -1,5 +1,5 @@
 import { Artboard } from '../Artboard';
-import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Stat, Quote, RowList, ReceiptRule, CtaFooter, Chip, Panel } from '../primitives';
+import { unit, Frame, Wordmark, Eyebrow, Headline, Lede, Stat, Quote, RowList, ReceiptRule, CtaFooter, Chip, Panel, CustomerLogo } from '../primitives';
 import { str, arr, type LayoutBaseProps } from './types';
 
 /** 4:5 — the tallest shape the feed shows in full. More room for a lede. */
@@ -37,7 +37,10 @@ export function PortraitPost(p: LayoutBaseProps) {
           <>
             <Quote u={u} size={56}>“{str(p.quote) || title}”</Quote>
             <ReceiptRule u={u} opacity={0.7} />
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 25 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 22 * u, flexWrap: 'wrap' }}>
+              {p.logo !== undefined ? <CustomerLogo u={u} src={str(p.logo)} height={44} /> : null}
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 25 * u, color: 'var(--art-muted)' }}>{str(p.attribution)}</div>
+            </div>
           </>
         ) : shape === 'caseStudy' ? (
           <>
